@@ -23,14 +23,14 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       
-    #   - name: Install dependencies
-    #     working-directory: ./cise_ass1a_worksheet2/cise_ass1a_worksheet2-frontend
-    #     run: npm install
+      - name: Install dependencies
+        working-directory: /frontend
+        run: npm install
       
-    #   - name: Run the tests
-    #     working-directory: ./cise_ass1a_worksheet2/cise_ass1a_worksheet2-frontend
-    #     run: npm test
+      # - name: Run the tests
+      #   working-directory: ./cise_ass1a_worksheet2/cise_ass1a_worksheet2-frontend
+      #   run: npm test
 
-    #   - name: Build
-    #     working-directory: ./cise_ass1a_worksheet2/cise_ass1a_worksheet2-frontend
-    #     run: npm run build
+      - name: Build
+        working-directory: /frontend
+        run: npm run build
