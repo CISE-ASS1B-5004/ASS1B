@@ -1,0 +1,36 @@
+name: CI_action
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      
+      - name: Install dependencies
+        working-directory: /frontend
+        run: npm install
+      
+      # - name: Run the tests
+      #   working-directory: ./cise_ass1a_worksheet2/cise_ass1a_worksheet2-frontend
+      #   run: npm test
+
+      - name: Build
+        working-directory: /frontend
+        run: npm run build
