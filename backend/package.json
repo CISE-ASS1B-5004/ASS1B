@@ -2,22 +2,22 @@
   "name": "ass1b",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node app.js",
-    "app": "nodemon app.js",
+    "start": "node index.js",
+    "app": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "(https://github.com/CISE-ASS1B-5004/ASS1B.git)"
+    "url": "(https://github.com/moon1324/ASS1B.git)"
   },
   "author": "Michael Moon",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/CISE-ASS1B-5004/ASS1B/issues"
+    "url": "https://github.com/moon1324/ASS1B/issues"
   },
-  "homepage": "https://github.com/CISE-ASS1B-5004/ASS1B#readme",
+  "homepage": "https://github.com/moon1324/ASS1B#readme",
   "dependencies": {
     "body-parser": "^1.20.2",
     "config": "^3.3.9",
