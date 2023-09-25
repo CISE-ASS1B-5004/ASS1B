@@ -27,7 +27,7 @@ export default function SubmissionForm() {
 
   return (
     <form className={formStyles.form} onSubmit={handleSubmit(onSubmit)}>
-      <div>
+      <div className={formStyles.section}>
         <label htmlFor="title">Title:</label>
         <input
           {...register("title")}
@@ -38,7 +38,7 @@ export default function SubmissionForm() {
         />
       </div>
 
-      <div>
+      <div className={formStyles.section}>
         <label htmlFor="authors">Authors (comma-separated):</label>
         <input
           {...register("authors")}
@@ -49,7 +49,7 @@ export default function SubmissionForm() {
         />
       </div>
 
-      <div>
+      <div className={formStyles.section}>
         <label htmlFor="journalName">Journal Name:</label>
         <input
           {...register("journalName")}
@@ -60,7 +60,7 @@ export default function SubmissionForm() {
         />
       </div>
 
-      <div>
+      <div className={formStyles.section}>
         <label htmlFor="pubYear">Publication Year:</label>
         <input
           {...register("pubYear")}
@@ -71,7 +71,7 @@ export default function SubmissionForm() {
         />
       </div>
 
-      <div>
+      <div className={formStyles.section}>
         <label htmlFor="volume">Volume:</label>
         <input
           {...register("volume")}
@@ -82,7 +82,7 @@ export default function SubmissionForm() {
         />
       </div>
 
-      <div>
+      <div className={formStyles.section}>
         <label htmlFor="pages">Pages:</label>
         <input
           {...register("pages")}
@@ -93,7 +93,7 @@ export default function SubmissionForm() {
         />
       </div>
 
-      <div>
+      <div className={formStyles.section}>
         <label htmlFor="doi">DOI:</label>
         <input
           {...register("doi")}

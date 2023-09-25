@@ -1,23 +1,18 @@
 import { IoMdArrowDropdown } from "react-icons/io";
 import NavBar from "./nav/NavBar";
-import NavDropdown from "./nav/NavDropdown";
 import NavItem from "./nav/NavItem";
 
 const PopulatedNavBar = () => {
   return (
-    <NavBar>
-      <NavItem>SPEED</NavItem>
-      <NavItem route="/" end>
-        Home
-      </NavItem>
-      <NavItem dropdown route="/articles">
-        Articles <IoMdArrowDropdown />
-        <NavDropdown>
-          <NavItem route="/articles">View articles</NavItem>
-          <NavItem route="/articles/new">Submit new</NavItem>
-        </NavDropdown>
-      </NavItem>
-    </NavBar>
+    <div>
+      <div>SPEED</div> {/* Moved SPEED above the NavBar */}
+      <NavBar>
+        <NavItem route="/">Home</NavItem>
+        <NavItem route="/articles">View Articles</NavItem>
+        <NavItem route="/articles/new">Submit New</NavItem>
+        <NavItem end route="/login">Login</NavItem>
+      </NavBar>
+    </div>
   );
 };
 
