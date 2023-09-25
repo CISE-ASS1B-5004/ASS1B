@@ -1,5 +1,6 @@
 import { FormEvent, useState } from "react";
-import formStyles from "../../../styles/Form.module.scss";
+import formStyles from "../../styles/Form.module.scss";
+import SubmissionForm from "../../components/SubmissionForm";
 
 const NewDiscussion = () => {
   const [title, setTitle] = useState("");
@@ -27,15 +28,12 @@ const NewDiscussion = () => {
   };
 
   // Some helper methods for the authors array
-
   const addAuthor = () => {
     setAuthors(authors.concat([""]));
   };
-
   const removeAuthor = (index: number) => {
     setAuthors(authors.filter((_, i) => i !== index));
   };
-
   const changeAuthor = (index: number, value: string) => {
     setAuthors(
       authors.map((oldValue, i) => {
@@ -43,10 +41,10 @@ const NewDiscussion = () => {
       })
     );
   };
-
   // Return the full form
-
   return (
+    <SubmissionForm />
+    /*
     <div className="container">
       <h1>New Article</h1>
       <form className={formStyles.form} onSubmit={submitNewArticle}>
@@ -61,7 +59,6 @@ const NewDiscussion = () => {
             setTitle(event.target.value);
           }}
         />
-
         <label htmlFor="author">Authors:</label>
         {authors.map((author, index) => {
           return (
@@ -92,7 +89,6 @@ const NewDiscussion = () => {
         >
           +
         </button>
-
         <label htmlFor="source">Source:</label>
         <input
           className={formStyles.formItem}
@@ -104,7 +100,6 @@ const NewDiscussion = () => {
             setSource(event.target.value);
           }}
         />
-
         <label htmlFor="pubYear">Publication Year:</label>
         <input
           className={formStyles.formItem}
@@ -121,7 +116,6 @@ const NewDiscussion = () => {
             }
           }}
         />
-
         <label htmlFor="doi">DOI:</label>
         <input
           className={formStyles.formItem}
@@ -133,7 +127,6 @@ const NewDiscussion = () => {
             setDoi(event.target.value);
           }}
         />
-
         <label htmlFor="summary">Summary:</label>
         <textarea
           className={formStyles.formTextArea}
@@ -141,12 +134,12 @@ const NewDiscussion = () => {
           value={summary}
           onChange={(event) => setSummary(event.target.value)}
         />
-
         <button className={formStyles.formItem} type="submit">
           Submit
         </button>
       </form>
     </div>
+    */
   );
 };
 

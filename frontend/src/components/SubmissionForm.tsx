@@ -1,32 +1,109 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import formStyles from "../styles/Form.module.scss";
+import axios from "axios";
 
 export default function SubmissionForm() {
   const { register, handleSubmit } = useForm();
 
-  const onSubmit = (data: any) => JSON.stringify(data);
+  const onSubmit = async (data: any) => {
+    const url = "http://localhost:8082/api/articles";
+
+    try {
+      const realAuthors = data.authors.split(",");
+      data.authors = realAuthors;
+
+      const response = await axios.post(url, data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Response:", response.data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input {...register("title")} placeholder="Title" />
-      <p>
-        <input {...register("authors")} placeholder="Authors" />
-      </p>
-      <p>
-        <input {...register("source")} placeholder="Source" />
-      </p>
-      <p>
-        <input {...register("pubyear")} placeholder="Publication Year" />
-      </p>
-      <p>
-        <input {...register("doi")} placeholder="DOI" />
-      </p>
+    <form className={formStyles.form} onSubmit={handleSubmit(onSubmit)}>
+      <div>
+        <label htmlFor="title">Title:</label>
+        <input
+          {...register("title")}
+          type="text"
+          id="title"
+          placeholder="Title"
+          required
+        />
+      </div>
 
-      <select {...register("linked_discussion")}>
-        <option value="">Select SE practice...</option>
-        <option value="TDD">TDD</option>
-        <option value="Mob Programming">Mob Programmin</option>
-      </select>
+      <div>
+        <label htmlFor="authors">Authors (comma-separated):</label>
+        <input
+          {...register("authors")}
+          type="text"
+          id="authors"
+          placeholder="Authors"
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="journalName">Journal Name:</label>
+        <input
+          {...register("journalName")}
+          type="text"
+          id="journalName"
+          placeholder="Journal Name"
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="pubYear">Publication Year:</label>
+        <input
+          {...register("pubYear")}
+          type="number"
+          id="pubYear"
+          placeholder="Publication Year"
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="volume">Volume:</label>
+        <input
+          {...register("volume")}
+          type="number"
+          id="volume"
+          placeholder="Volume"
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="pages">Pages:</label>
+        <input
+          {...register("pages")}
+          type="number"
+          id="pages"
+          placeholder="Pages"
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="doi">DOI:</label>
+        <input
+          {...register("doi")}
+          type="text"
+          id="doi"
+          placeholder="DOI"
+          required
+        />
+      </div>
+
       <input type="submit" />
     </form>
   );
