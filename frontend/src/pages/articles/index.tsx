@@ -5,14 +5,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 interface ArticlesInterface {
-  id: string;
   title: string;
   authors: string;
-  source: string;
-  pubyear: string;
+  journalName: string;
+  pubYear: string;
+  volume: string;
+  pages: string;
   doi: string;
-  summary: string;
-  linkedDiscussion: string;
 }
 type ArticlesProps = {
   articles: ArticlesInterface[];
@@ -22,11 +21,11 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
   const headers: { key: keyof ArticlesInterface; label: string }[] = [
     { key: "title", label: "Title" },
     { key: "authors", label: "Authors" },
-    { key: "source", label: "Source" },
-    { key: "pubyear", label: "Publication Year" },
+    { key: "journalName", label: "Journal Name" },
+    { key: "pubYear", label: "Publication Year" },
+    { key: "volume", label: "Volume" },
+    { key: "pages", label: "Pages" },
     { key: "doi", label: "DOI" },
-    { key: "summary", label: "Summary" },
-    { key: "linkedDiscussion", label: "Linked Discussion" },
   ];
 
   const [articles, setArticles] = useState(initialArticles);
@@ -44,11 +43,11 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
             id: article.id ?? article._id,
             title: article.title,
             authors: article.authors,
-            source: article.source,
-            pubyear: article.publicationYear,
+            journalName: article.journalName,
+            pubYear: article.pubYear,
+            volume: article.volume,
+            pages: article.pages,
             doi: article.doi,
-            summary: article.summary,
-            linkedDiscussion: article.linkedDiscussion,
           })
         );
         setArticles(fetchedArticles);

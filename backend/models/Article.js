@@ -9,7 +9,7 @@ const ArticleSchema = new mongoose.Schema({
     type: [String], // Array of strings for multiple authors
     required: true,
   },
-  source: {
+  journalName: {
     type: String,
     required: true,
   },
@@ -17,14 +17,17 @@ const ArticleSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  volume: {
+    type: Number,
+    required: true,
+  },
+  pages: {
+    type: Number,
+    required: true,
+  },
   doi: {
     type: String,
-  },
-  summary: {
-    type: String,
-  },
-  linkedDiscussion: {
-    type: String,
+    required: true,
   },
 });
 

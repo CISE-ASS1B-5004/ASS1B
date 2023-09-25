@@ -34,26 +34,29 @@ export default function SubmissionForm() {
           type="text"
           id="title"
           placeholder="Title"
+          required
         />
       </div>
 
       <div>
-        <label htmlFor="authors">Authors:</label>
+        <label htmlFor="authors">Authors (comma-separated):</label>
         <input
           {...register("authors")}
           type="text"
           id="authors"
           placeholder="Authors"
+          required
         />
       </div>
 
       <div>
-        <label htmlFor="source">Source:</label>
+        <label htmlFor="journalName">Journal Name:</label>
         <input
-          {...register("source")}
+          {...register("journalName")}
           type="text"
-          id="source"
-          placeholder="Source"
+          id="journalName"
+          placeholder="Journal Name"
+          required
         />
       </div>
 
@@ -61,34 +64,43 @@ export default function SubmissionForm() {
         <label htmlFor="pubYear">Publication Year:</label>
         <input
           {...register("pubYear")}
-          type="text"
+          type="number"
           id="pubYear"
           placeholder="Publication Year"
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="volume">Volume:</label>
+        <input
+          {...register("volume")}
+          type="number"
+          id="volume"
+          placeholder="Volume"
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="pages">Pages:</label>
+        <input
+          {...register("pages")}
+          type="number"
+          id="pages"
+          placeholder="Pages"
+          required
         />
       </div>
 
       <div>
         <label htmlFor="doi">DOI:</label>
-        <input {...register("doi")} type="text" id="doi" placeholder="DOI" />
-      </div>
-
-      <div>
-        <label htmlFor="summary">Summary:</label>
         <input
-          {...register("summary")}
+          {...register("doi")}
           type="text"
-          id="summary"
-          placeholder="Summary"
-        />
-      </div>
-
-      <div>
-        <label htmlFor="linkedDiscussion">Linked Discussion:</label>
-        <input
-          {...register("linkedDiscussion")}
-          type="text"
-          id="linkedDiscussion"
-          placeholder="Linked Discussion"
+          id="doi"
+          placeholder="DOI"
+          required
         />
       </div>
 
