@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import SearchBar from "../../components/SearchBar";
 import axios from "axios";
 import SortableTable from "../../components/table/SortableTable";
+import pageStyle from "../pages.module.scss";
 
 interface ArticlesInterface {
   id: string;
@@ -69,10 +70,12 @@ const SearchPage: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className={pageStyle.page}>
       <h1>Search Page</h1>
+      <div className={pageStyle.searchbar}>
       <h2>Search Article Title</h2>
       <SearchBar onSearch={handleSearch} />
+      </div>
       <h2>Search Results</h2>
       {isLoading ? (
         <div>Loading...</div>

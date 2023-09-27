@@ -72,25 +72,4 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
   );
 };
 
-/*
-export const getStaticProps: GetStaticProps<ArticlesProps> = async (_) => {
-  // Map the data to ensure all articles have consistent property names
-  const articles = data.articles.map((article) => ({
-    id: article.id ?? article._id,
-    title: article.title,
-    authors: article.authors,
-    source: article.source,
-    pubyear: article.pubyear,
-    doi: article.doi,
-    claim: article.claim,
-    evidence: article.evidence,
-  }));
-  return {
-    props: {
-      articles,
-    },
-  };
-};
-*/
-
 export default Articles;

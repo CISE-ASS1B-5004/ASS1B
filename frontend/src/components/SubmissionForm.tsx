@@ -44,7 +44,7 @@ export default function SubmissionForm() {
       <form className={formStyles.form} onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label htmlFor="title">Title:</label>
-          <input
+          <input className={formStyles.input}
             {...register("title")}
             type="text"
             id="title"
@@ -55,7 +55,7 @@ export default function SubmissionForm() {
 
         <div>
           <label htmlFor="authors">Authors (comma-separated):</label>
-          <input
+          <input className={formStyles.input}
             {...register("authors")}
             type="text"
             id="authors"
@@ -66,7 +66,7 @@ export default function SubmissionForm() {
 
         <div>
           <label htmlFor="journalName">Journal Name:</label>
-          <input
+          <input className={formStyles.input}
             {...register("journalName")}
             type="text"
             id="journalName"
@@ -77,7 +77,7 @@ export default function SubmissionForm() {
 
         <div>
           <label htmlFor="pubYear">Publication Year:</label>
-          <input
+          <input className={formStyles.input}
             {...register("pubYear")}
             type="number"
             id="pubYear"
@@ -88,7 +88,7 @@ export default function SubmissionForm() {
 
         <div>
           <label htmlFor="volume">Volume:</label>
-          <input
+          <input className={formStyles.input}
             {...register("volume")}
             type="number"
             id="volume"
@@ -99,7 +99,7 @@ export default function SubmissionForm() {
 
         <div>
           <label htmlFor="pages">Pages:</label>
-          <input
+          <input className={formStyles.input}
             {...register("pages")}
             type="number"
             id="pages"
@@ -110,7 +110,7 @@ export default function SubmissionForm() {
 
         <div>
           <label htmlFor="doi">DOI:</label>
-          <input
+          <input className={formStyles.input}
             {...register("doi")}
             type="text"
             id="doi"
@@ -119,7 +119,7 @@ export default function SubmissionForm() {
           />
         </div>
 
-        <input type="submit" />
+        <input type="submit" className={formStyles.buttonItem}/>
       </form>
     </div>
   );

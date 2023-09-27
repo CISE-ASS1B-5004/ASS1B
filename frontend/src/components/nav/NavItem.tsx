@@ -25,7 +25,7 @@ const NavItem = ({ children, route, end, dropdown, onClick, style }: Props) => {
   return (
     <div
       style={style}
-      className={`${route || onClick ? styles.clickable : styles.navitem}${
+      className={`${styles.navitem}${route || onClick ? ` ${styles.clickable}` : ""}${
         end ? ` ${styles.end}` : ""
       }${dropdown ? ` ${styles.dropdown}` : ""}`}
       onClick={typeof onClick === "function" ? onClick : navigate}
