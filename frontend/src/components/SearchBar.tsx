@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import style from "./SearchBar.module.scss";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -16,8 +17,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   };
 
   return (
-    <div>
-      <input
+    <div className={style.searchInput}>
+      <input 
         type="text"
         placeholder="Search..."
         value={query}
