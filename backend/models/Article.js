@@ -37,6 +37,10 @@ const ArticleSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  inModerationQueue: {
+    type: Boolean,
+    default: true,
+  }
 });
 
 module.exports = Article = mongoose.model("article", ArticleSchema);
