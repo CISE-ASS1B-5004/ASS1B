@@ -29,6 +29,14 @@ const ArticleSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  claims: {
+    type: String,
+    required: true,
+  },
+  method: {
+    type: String,
+    required: true,
+  },
 });
 
 module.exports = Article = mongoose.model("article", ArticleSchema);
