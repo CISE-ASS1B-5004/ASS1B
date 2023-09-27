@@ -12,6 +12,8 @@ interface ArticlesInterface {
   volume: string;
   pages: string;
   doi: string;
+  claims: string;
+  method: string;
 }
 type ArticlesProps = {
   articles: ArticlesInterface[];
@@ -26,6 +28,8 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
     { key: "volume", label: "Volume" },
     { key: "pages", label: "Pages" },
     { key: "doi", label: "DOI" },
+    { key: "claims", label: "Claims" },
+    { key: "method", label: "Method" },
   ];
 
   const [articles, setArticles] = useState(initialArticles);
@@ -48,6 +52,8 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
             volume: article.volume,
             pages: article.pages,
             doi: article.doi,
+            claims: article.claims,
+            method: article.method,
           })
         );
         setArticles(fetchedArticles);

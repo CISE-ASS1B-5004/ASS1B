@@ -14,6 +14,8 @@ interface ArticlesInterface {
   volume: string;
   pages: string;
   doi: string;
+  claims: string;
+  method: string;
 }
 type ArticlesProps = {
   articles: ArticlesInterface[];
@@ -28,6 +30,8 @@ const SearchPage: React.FC = () => {
     { key: "volume", label: "Volume" },
     { key: "pages", label: "Pages" },
     { key: "doi", label: "DOI" },
+    { key: "claims", label: "Claims" },
+    { key: "method", label: "Method" },
   ];
   const [searchResults, setSearchResults] = useState<ArticlesInterface[]>([]);
   const [articles, setArticles] = useState<ArticlesInterface[]>([]);
@@ -50,6 +54,8 @@ const SearchPage: React.FC = () => {
             volume: article.volume,
             pages: article.pages,
             doi: article.doi,
+            claims: article.claims,
+            method: article.method,
           })
         );
         setArticles(fetchedArticles);
@@ -73,8 +79,8 @@ const SearchPage: React.FC = () => {
     <div className={pageStyle.page}>
       <h1>Search Page</h1>
       <div className={pageStyle.searchbar}>
-      <h2>Search Article Title</h2>
-      <SearchBar onSearch={handleSearch} />
+        <h2>Search Article Title</h2>
+        <SearchBar onSearch={handleSearch} />
       </div>
       <h2>Search Results</h2>
       {isLoading ? (
