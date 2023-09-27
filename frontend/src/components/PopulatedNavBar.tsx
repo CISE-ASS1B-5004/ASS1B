@@ -3,7 +3,7 @@ import NavBar from "./nav/NavBar";
 import NavItem from "./nav/NavItem";
 import styles from "./PopulatedNavBar.module.scss";
 import navStyles from "./nav/Nav.module.scss";
-import { useUserRole } from "@/pages/UserContext";
+import { useUserRole } from "@/components/UserContext";
 import { useRouter } from 'next/router';
 
 
@@ -19,9 +19,9 @@ const PopulatedNavBar = () => {
   function getRoute(){
    let UR = userRole.toLowerCase();
    if(UR === "Analyst") {
-    return './articles/analysis';
+    return './pages/articles/analysis';
   }else
-      return './articles/moderation';
+      return './pages/articles/moderation';
   
     
   }

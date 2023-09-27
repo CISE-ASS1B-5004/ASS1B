@@ -2,7 +2,7 @@ import { useState } from "react";
 import styles from "../styles/login.module.scss";
 import { AiOutlineClose } from 'react-icons/ai';
 import { useRouter } from 'next/router';
-import { useUserRole } from "./UserContext";
+import { useUserRole } from "../components/UserContext";
 
 const Login = () => {
     const [password, setPassword] = useState("");
