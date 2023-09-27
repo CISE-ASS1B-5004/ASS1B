@@ -2,6 +2,7 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import NavBar from "./nav/NavBar";
 import NavItem from "./nav/NavItem";
 import styles from "./PopulatedNavBar.module.scss";
+import navStyles from "./nav/Nav.module.scss";
 import { useUserRole } from "@/pages/UserContext";
 import { useRouter } from 'next/router';
 
@@ -15,6 +16,16 @@ const PopulatedNavBar = () => {
     router.push('/'); // Redirect to home page or wherever you want after logout
   };
 
+  function getRoute(){
+   let UR = userRole.toLowerCase();
+   if(UR === "Analyst") {
+    return './articles/analysis';
+  }else
+      return './articles/moderation';
+  
+    
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.title}>SPEED</div> {/* Moved SPEED above the NavBar */}
@@ -25,10 +36,12 @@ const PopulatedNavBar = () => {
         <NavItem route="/articles">View Articles</NavItem>
         <NavItem route="/articles/new">Submit New</NavItem>
         <NavItem route="/articles/search">Search</NavItem>
+
+
         </div>
         <div className={styles.user}> {userRole ? (
             <>
-              <div className={styles.role}>{userRole}</div>
+              <NavItem route={getRoute()} className={navStyles.role}>{userRole}</NavItem>
               <button onClick={handleLogout} className={styles.logoutButton}>Logout</button>
             </>
           ) : (

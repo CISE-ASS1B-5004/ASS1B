@@ -19,13 +19,13 @@ const Login = () => {
       if (role === "Moderator" && password === moderatorPassword) {
         console.log("Logged in as Moderator");
         setUserRole("Moderator");
-        router.push('/articles/new');
+        router.push('/articles/moderation');
         // Navigate to moderator page or set up some session state
       } else if (role === "Analyst" && password === analystPassword) {
         console.log("Logged in as Analyst");
         setUserRole("Analyst");
         // Navigate to analyst page or set up some session state
-        router.push('/');
+        router.push('/articles/analysis');
       } else {
         console.log("Incorrect password or role selection");
       }
