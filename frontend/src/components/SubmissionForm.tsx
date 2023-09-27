@@ -119,7 +119,7 @@ export default function SubmissionForm() {
           />
         </div>
 
-        <input type="submit" />
+        <input type="submit" className={formStyles.buttonItem}/>
       </form>
     </div>
   );
