@@ -36,6 +36,8 @@ const SearchPage: React.FC = () => {
   const [searchResults, setSearchResults] = useState<ArticlesInterface[]>([]);
   const [articles, setArticles] = useState<ArticlesInterface[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedMethod, setSelectedMethod] = useState<string>("");
+  const [methodOptions, setMethodOptions] = useState<string[]>([]);
 
   useEffect(() => {
     // Fetch articles from the API when the component mounts
@@ -60,6 +62,10 @@ const SearchPage: React.FC = () => {
         );
         setArticles(fetchedArticles);
         setIsLoading(false); // Data has been fetched
+        const uniqueMethods = Array.from(
+          new Set(fetchedArticles.map((article) => article.method))
+        );
+        setMethodOptions(uniqueMethods);
       })
       .catch((error) => {
         console.error("Error fetching articles:", error);
@@ -68,11 +74,18 @@ const SearchPage: React.FC = () => {
   }, []);
 
   const handleSearch = (query: string) => {
-    // Filter articles based on the search query
-    const filteredArticles = articles.filter((article) =>
-      article.title.toLowerCase().includes(query.toLowerCase())
+    // Filter articles based on the search query and selected method
+    const filteredArticles = articles.filter(
+      (article) =>
+        article.title.toLowerCase().includes(query.toLowerCase()) &&
+        (selectedMethod === "" || article.method === selectedMethod)
     );
     setSearchResults(filteredArticles);
+  };
+
+  const handleMethodChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    // Update the selected method filter when the drop-down value changes
+    setSelectedMethod(event.target.value);
   };
 
   return (
@@ -81,6 +94,17 @@ const SearchPage: React.FC = () => {
       <div className={pageStyle.searchbar}>
         <h2>Search Article Title</h2>
         <SearchBar onSearch={handleSearch} />
+      </div>
+      <div className={pageStyle.methodFilter}>
+        <h2>Filter by Method</h2>
+        <select onChange={handleMethodChange} value={selectedMethod}>
+          <option value="">All Methods</option>
+          {methodOptions.map((method) => (
+            <option key={method} value={method}>
+              {method}
+            </option>
+          ))}
+        </select>
       </div>
       <h2>Search Results</h2>
       {isLoading ? (
