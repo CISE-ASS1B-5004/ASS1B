@@ -1,12 +1,13 @@
 import { GetStaticProps, NextPage } from "next";
 import SortableTable from "../../components/table/SortableTable";
+import data from "../../utils/dummydata.json";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 interface ArticlesInterface {
-  id: string;
+  _id: string;
   title: string;
-  authors: string;
+  authors: string[];
   journalName: string;
   pubYear: string;
   volume: string;
@@ -15,91 +16,84 @@ interface ArticlesInterface {
   claims: string;
   method: string;
 }
-type ArticlesProps = {
-  articles: ArticlesInterface[];
-};
 
-const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
-  const headers: { key: keyof ArticlesInterface; label: string }[] = [
-    { key: "title", label: "Title" },
-    { key: "authors", label: "Authors" },
-    { key: "journalName", label: "Journal Name" },
-    { key: "pubYear", label: "Publication Year" },
-    { key: "volume", label: "Volume" },
-    { key: "pages", label: "Pages" },
-    { key: "doi", label: "DOI" },
-    { key: "claims", label: "Claims" },
-    { key: "method", label: "Method" },
-  ];
-
-  const [articles, setArticles] = useState(initialArticles);
+const Articles: React.FC = () => {
+  const [articles, setArticles] = useState<ArticlesInterface[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const handleDelete = (id: string) => {
-    axios
-      .delete(`http://localhost:8082/api/moderator/${id}`)
-      .then(() => {
-        // update the status, delete article from the UI
-        setArticles((prevArticles) => prevArticles.filter((article) => article.id !== id));
-      })
-      .catch((error) => console.error("Error deleting article:", error));
-  };
-
   useEffect(() => {
-    // Fetch articles from the API
     axios
       .get("http://localhost:8082/api/moderator")
       .then((response) => {
-        const data = response.data;
-        console.log(data);
-        const fetchedArticles: ArticlesInterface[] = data.map(
-          (article: any) => ({
-            id: article.id ?? article._id,
-            title: article.title,
-            authors: article.authors,
-            journalName: article.journalName,
-            pubYear: article.pubYear,
-            volume: article.volume,
-            pages: article.pages,
-            doi: article.doi,
-            claims: article.claims,
-            method: article.method,
-            inModerationQueue: article.inModerationQueue,
-          })
-        );
+        const fetchedArticles: ArticlesInterface[] = response.data.map((article: any) => ({
+            ...article,
+            id: article._id // Ensure the correct id is set here
+          }));
         setArticles(fetchedArticles);
-        setIsLoading(false); // Data has been fetched
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching articles:", error);
-        setIsLoading(false); // An error occurred while fetching
+        setIsLoading(false);
       });
   }, []);
 
+  const handleApprove = (id: string) => {
+    axios
+      .put(`http://localhost:8082/api/moderator/approve/${id}`)
+      .then(() => {
+        setArticles(articles.filter(article => article._id !== id));
+      })
+      .catch((error) => console.error("Error approving article:", error));
+  };
+
+  const handleReject = (id: string) => {
+      axios
+        .put(`http://localhost:8082/api/moderator/reject/${id}`)
+        .then(() => {
+          setArticles(articles.filter(article => article._id !== id));
+        })
+        .catch((error) => console.error("Error rejecting article:", error));
+    };
   return (
     <div className="container">
       <h1>Moderator Index Page</h1>
       <p>Page containing a table of articles with moderation queue:</p>
       {isLoading ? (
         <div>Loading...</div>
+      ) : articles.length === 0 ? (
+        <div>No Articles found in the moderation queue</div>
       ) : (
         <table>
           <thead>
             <tr>
-              {headers && headers.map((header) => (
-                <th key={header.key}>{header.label}</th>
-              ))}
+              <th>Title</th>
+              <th>Authors</th>
+              <th>Journal Name</th>
+              <th>Published Year</th>
+              <th>Volume</th>
+              <th>Pages</th>
+              <th>DOI</th>
+              <th>Claims</th>
+              <th>Method</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {articles && articles.map((article) => (
-              <tr key={article.id}>
-                {headers && headers.map((header) => (
-                  <td key={header.key}>{article[header.key]}</td>
-                ))}
+            {articles.map((article) => (
+              <tr key={article._id}>
+                <td>{article.title}</td>
+                <td>{article.authors.join(', ')}</td>
+                <td>{article.journalName}</td>
+                <td>{article.pubYear}</td>
+                <td>{article.volume}</td>
+                <td>{article.pages}</td>
+                <td>{article.doi}</td>
+                <td>{article.claims}</td>
+                <td>{article.method}</td>
                 <td>
-                  <button onClick={() => handleDelete(article.id)}>Delete</button>
+                  <button onClick={() => handleApprove(article._id)}>Approve</button>
+                  <button onClick={() => handleReject(article._id)}>Reject</button>
                 </td>
               </tr>
             ))}

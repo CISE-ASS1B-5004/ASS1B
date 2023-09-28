@@ -3,6 +3,7 @@ const server = require('../index');
 const mongoose = require('mongoose');
 
 describe('Moderator API', () => {
+  let articleId;
   beforeAll(async () => {
     await Article.deleteMany({}); // Clear the articles
   });
@@ -40,7 +41,9 @@ describe('Moderator API', () => {
       doi:'Test', 
       claims: 'Test', 
       method:'Test', 
-      inModerationQueue: true });
+      isApprovedByModerator: false,
+      isRejectedByModerator: false,
+    });
 
     const res = await request(server).get('/api/moderator');
     expect(res.status).toEqual(200);
@@ -61,41 +64,98 @@ describe('Moderator API', () => {
     expect(res.body.noarticlesfound).toEqual('No Articles found in the moderation queue');
   });
 
-  // Test for DELETE /api/moderator/:id route
-it('should delete article in the moderation queue on DELETE /api/moderator/:id', async () => {
-  // Create an article for testing
-  const article = await Article.create({ 
-    title: 'Test Article for Delete', 
-    authors: 'michael', 
-    journalName: 'Test', 
-    pubYear:'1', 
-    volume:'1', 
-    pages:'1', 
-    doi:'Test', 
-    claims: 'Test', 
-    method:'Test', 
-    inModerationQueue: true 
+  // Testing PUT /api/moderator/approve/:id
+  it('should successfully approve an article in the moderation queue', async () => {
+    const newArticle = await Article.create({ 
+      title: 'Test Article', 
+      authors: 'michael', 
+      journalName: 'Test', 
+      pubYear:'1', 
+      volume:'1', 
+      pages:'1', 
+      doi:'Test', 
+      claims: 'Test', 
+      method:'Test', 
+      isApprovedByModerator: false,
+      isRejectedByModerator: false,
+    });
+    articleId = newArticle._id;
+    const res = await request(server).put(`/api/moderator/approve/${articleId}`);
+    expect(res.status).toEqual(200);
+    expect(res.body).toHaveProperty('msg', 'Updated successfully');
   });
-  
-  const res = await request(server).delete(`/api/moderator/${article.id}`);
-  // console.log(res.body);
 
-  expect(res.status).toEqual(200);
-  expect(res.body.msg).toEqual('Article entry deleted successfully');
-  
-  // Check if the article is actually deleted from the database
-  const foundArticle = await Article.findById(article.id);
-  expect(foundArticle).toBeNull();
+  it('should return error when trying to approve non-existent article', async () => {
+    const res = await request(server).put('/api/moderator/approve/nonexistentid');
+    expect(res.status).toEqual(400);
+    expect(res.body).toHaveProperty('error', 'Unable to update the Database');
+  });
+
+  // Testing PUT /api/moderator/reject/:id
+  it('should successfully reject an article in the moderation queue', async () => {
+    // Create another article for rejection testing, as the previous one is already approved
+    const anotherArticle = await Article.create({ 
+      title: 'Test Article 2', 
+      authors: 'michael', 
+      journalName: 'Test', 
+      pubYear:'1', 
+      volume:'1', 
+      pages:'1', 
+      doi:'Test', 
+      claims: 'Test', 
+      method:'Test', 
+      isApprovedByModerator: false,
+      isRejectedByModerator: false,
+    });
+    const res = await request(server).put(`/api/moderator/reject/${anotherArticle._id}`);
+    expect(res.status).toEqual(200);
+    expect(res.body).toHaveProperty('msg', 'Updated successfully');
+  });
+
+  it('should return error when trying to reject non-existent article', async () => {
+    const res = await request(server).put('/api/moderator/reject/nonexistentid');
+    expect(res.status).toEqual(400);
+    expect(res.body).toHaveProperty('error', 'Unable to update the Database');
+  });
+
 });
 
-// Test for trying to delete non-existing article
-it('should return 404 error when trying to delete non-existing article', async () => {
-  const nonExistingId = 'someNonExistingId';
-  const res = await request(server).delete(`/api/moderator/${nonExistingId}`);
+  // Test for DELETE /api/moderator/:id route
+// it('should delete article in the moderation queue on DELETE /api/moderator/:id', async () => {
+//   // Create an article for testing
+//   const article = await Article.create({ 
+//     title: 'Test Article for Delete', 
+//     authors: 'michael', 
+//     journalName: 'Test', 
+//     pubYear:'1', 
+//     volume:'1', 
+//     pages:'1', 
+//     doi:'Test', 
+//     claims: 'Test', 
+//     method:'Test', 
+//     isApprovedByModerator: false,
+//     isRejectedByModerator: false,
+//   });
   
-  expect(res.status).toEqual(404);
-  expect(res.body.error).toEqual('No such an article');
-});
+//   const res = await request(server).delete(`/api/moderator/${article.id}`);
+//   // console.log(res.body);
+
+//   expect(res.status).toEqual(200);
+//   expect(res.body.msg).toEqual('Article entry deleted successfully');
+  
+//   // Check if the article is actually deleted from the database
+//   const foundArticle = await Article.findById(article.id);
+//   expect(foundArticle).toBeNull();
+// });
+
+// // Test for trying to delete non-existing article
+// it('should return 404 error when trying to delete non-existing article', async () => {
+//   const nonExistingId = 'someNonExistingId';
+//   const res = await request(server).delete(`/api/moderator/${nonExistingId}`);
+  
+//   expect(res.status).toEqual(404);
+//   expect(res.body.error).toEqual('No such an article');
+// });
 
   // it('should list ALL articles in the moderation queue on /api/moderator GET', async () => {
   //   // Create one article for testing
@@ -135,4 +195,3 @@ it('should return 404 error when trying to delete non-existing article', async (
   //   expect(res.status).toEqual(404);
   //   expect(res.body.noarticlesfound).toEqual('No Articles found in the moderation queue');
   // });
-});
