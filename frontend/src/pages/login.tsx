@@ -19,7 +19,7 @@ const Login = () => {
     if (role === "Moderator" && password === moderatorPassword) {
       console.log("Logged in as Moderator");
       setUserRole("Moderator");
-      router.push("/articles/new");
+      router.push("/moderator");
       // Navigate to moderator page or set up some session state
     } else if (role === "Analyst" && password === analystPassword) {
       console.log("Logged in as Analyst");

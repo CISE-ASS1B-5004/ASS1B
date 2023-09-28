@@ -5,7 +5,7 @@ const router = express.Router();
 const Article = require("../../models/Article");
 
 // @route GET api/moderator/test
-// @description tests articles route
+// @description tests moderator route
 // @access Public
 router.get("/test", (req, res) => res.send("moderator route testing!"));
 
@@ -13,11 +13,16 @@ router.get("/test", (req, res) => res.send("moderator route testing!"));
 // @description Get all articles in the moderation queue
 // @access Public
 router.get("/", (req, res) => {
-    Article.find({ inModerationQueue: true }) // only find articles where inModerationQueue is true
-      .then((articles) => res.json(articles))
-      .catch((err) =>
-        res.status(404).json({ noarticlesfound: "No Articles found in the moderation queue" })
-    );
+  Article.find({ inModerationQueue: true })
+    .then((articles) => {
+      if (articles.length === 0) {
+        return res.status(404).json({ noarticlesfound: "No Articles found in the moderation queue" });
+      }
+      res.json(articles);
+    })
+    .catch((err) =>
+      res.status(500).json({ error: "An error occurred while retrieving the articles" })
+  );
 });
 
 // @route GET api/moderator/:id
@@ -57,9 +62,41 @@ router.put("/:id", (req, res) => {
 // @description Delete article by id
 // @access Public
 router.delete("/:id", (req, res) => {
-  Article.findByIdAndRemove(req.params.id, req.body)
-    .then((article) => res.json({ mgs: "Article entry deleted successfully" }))
-    .catch((err) => res.status(404).json({ error: "No such a article" }));
+  Article.findByIdAndRemove(req.params.id)
+    .then((article) => res.json({ msg: "Article entry deleted successfully" }))
+    .catch((err) => res.status(404).json({ error: "No such an article" }));
 });
 
 module.exports = router;
+
+
+
+// function ensureModerator(req, res, next) {
+//   if (req.session && req.session.user && req.session.user.role === 'Moderator') {
+//     return next();
+//   }
+//   res.status(403).send('Access Denied: You are not a Moderator!');
+// }
+
+
+
+// router.get("/", (req, res) => {
+//   Article.find({ inModerationQueue: true })
+//     .then((articles) => res.json(articles))
+//     .catch((err) =>
+//       res.status(404).json({ noarticlesfound: "No Articles found in the moderation queue" })
+//   );
+// });
+
+
+// // @route GET api/moderator
+// // @description Get all articles in the moderation queue
+// // @access Moderator only
+// router.get("/", ensureModerator, (req, res) => {
+//   // This logic runs only when the role of the user is a moderator.
+//   Article.find({ inModerationQueue: true })
+//     .then((articles) => res.json(articles))
+//     .catch((err) =>
+//       res.status(404).json({ noarticlesfound: "No Articles found in the moderation queue" })
+//   );
+// });
