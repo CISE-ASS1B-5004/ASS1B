@@ -22,11 +22,11 @@ describe('Moderator API', () => {
   });
 
   // Testing whether the user with no moderator role getting access denied from the page
-  // it('should return 403 if not a moderator for GET /api/moderator', async () => {
-  //   const res = await request(server).get('/api/moderator');
-  //   expect(res.statusCode).toEqual(403);
-  //   expect(res.text).toEqual('Access Denied: You are not a Moderator!');
-  // });
+  it('should return 403 if not a moderator for GET /api/moderator', async () => {
+    const res = await request(server).get('/api/moderator'); // No user-role header
+    expect(res.statusCode).toEqual(403);
+    expect(res.body.error).toEqual('Access Denied: You are not a Moderator!');
+  });
 
   // Testing whether the page shows only one article when it has been added one article in the queue
   it('should list ALL articles in the moderation queue on /api/moderator GET', async () => {
@@ -45,7 +45,7 @@ describe('Moderator API', () => {
       isRejectedByModerator: false,
     });
 
-    const res = await request(server).get('/api/moderator');
+    const res = await request(server).get('/api/moderator').set('user-role', 'Moderator'); // Include user-role header
     expect(res.status).toEqual(200);
     expect(res.body).toHaveLength(1);
     expect(res.body[0].title).toEqual('Test Article');
@@ -56,7 +56,7 @@ describe('Moderator API', () => {
     // Delete all the articles to make Moderation Queue empty
     await Article.deleteMany({});
     
-    const res = await request(server).get('/api/moderator');
+    const res = await request(server).get('/api/moderator').set('user-role', 'Moderator'); // Include user-role heade
 
     // console.log(res.body);
 
@@ -80,13 +80,13 @@ describe('Moderator API', () => {
       isRejectedByModerator: false,
     });
     articleId = newArticle._id;
-    const res = await request(server).put(`/api/moderator/approve/${articleId}`);
+    const res = await request(server).put(`/api/moderator/approve/${articleId}`).set('user-role', 'Moderator'); // Include user-role header
     expect(res.status).toEqual(200);
     expect(res.body).toHaveProperty('msg', 'Updated successfully');
   });
 
   it('should return error when trying to approve non-existent article', async () => {
-    const res = await request(server).put('/api/moderator/approve/nonexistentid');
+    const res = await request(server).put('/api/moderator/approve/nonexistentid').set('user-role', 'Moderator'); // Include user-role header
     expect(res.status).toEqual(400);
     expect(res.body).toHaveProperty('error', 'Unable to update the Database');
   });
@@ -107,13 +107,13 @@ describe('Moderator API', () => {
       isApprovedByModerator: false,
       isRejectedByModerator: false,
     });
-    const res = await request(server).put(`/api/moderator/reject/${anotherArticle._id}`);
+    const res = await request(server).put(`/api/moderator/reject/${anotherArticle._id}`).set('user-role', 'Moderator'); // Include user-role header
     expect(res.status).toEqual(200);
     expect(res.body).toHaveProperty('msg', 'Updated successfully');
   });
 
   it('should return error when trying to reject non-existent article', async () => {
-    const res = await request(server).put('/api/moderator/reject/nonexistentid');
+    const res = await request(server).put('/api/moderator/reject/nonexistentid').set('user-role', 'Moderator'); // Include user-role header
     expect(res.status).toEqual(400);
     expect(res.body).toHaveProperty('error', 'Unable to update the Database');
   });

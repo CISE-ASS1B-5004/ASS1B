@@ -13,6 +13,11 @@ router.get("/test", (req, res) => res.send("moderator route testing!"));
 // @description Get all articles in the moderation queue
 // @access Public
 router.get("/", (req, res) => {
+  const userRole = req.get('user-role');
+  if (userRole !== 'Moderator') {
+    return res.status(403).json({ error: "Access Denied: You are not a Moderator!" });
+  }
+
   Article.find({ isApprovedByModerator: false, isRejectedByModerator: false })
     .then((articles) => {
       if (articles.length === 0) {
@@ -29,6 +34,11 @@ router.get("/", (req, res) => {
 // @description Approve an article in the moderation queue
 // @access Public (Consider changing to Private or Protected)
 router.put("/approve/:id", (req, res) => {
+  const userRole = req.get('user-role');
+  if (userRole !== 'Moderator') {
+    return res.status(403).json({ error: "Access Denied: You are not a Moderator!" });
+  }
+
   Article.findByIdAndUpdate(
     req.params.id, 
     { isApprovedByModerator: true },
@@ -44,6 +54,11 @@ router.put("/approve/:id", (req, res) => {
 // @description Reject an article in the moderation queue
 // @access Public (Consider changing to Private or Protected)
 router.put('/reject/:id', (req, res) => {
+  const userRole = req.get('user-role');
+  if (userRole !== 'Moderator') {
+    return res.status(403).json({ error: "Access Denied: You are not a Moderator!" });
+  }
+
   Article.findByIdAndUpdate(
     req.params.id, 
     { isRejectedByModerator: true },
