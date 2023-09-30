@@ -118,80 +118,58 @@ describe('Moderator API', () => {
     expect(res.body).toHaveProperty('error', 'Unable to update the Database');
   });
 
+  // Testing GET /api/moderator/archive
+  it('should list ALL articles in the archive on /api/moderator/archive GET', async () => {
+    // Delete all the articles to make Moderation Queue empty
+    await Article.deleteMany({});
+    // Create one article rejected by Moderator for testing
+    await Article.create({
+      title: 'Rejected by Moderator',
+      authors: 'michael', 
+      journalName: 'Test', 
+      pubYear:'1', 
+      volume:'1', 
+      pages:'1', 
+      doi:'Test', 
+      claims: 'Test', 
+      method:'Test', 
+      isRejectedByModerator: true,
+    });
+    
+    // Create one article rejected by Analyst for testing
+    await Article.create({
+      title: 'Rejected by Analyst',
+      authors: 'michael', 
+      journalName: 'Test', 
+      pubYear:'1', 
+      volume:'1', 
+      pages:'1', 
+      doi:'Test', 
+      claims: 'Test', 
+      method:'Test', 
+      isRejectedByAnalyst: true,
+    });
+
+    const res = await request(server).get('/api/moderator/archive').set('user-role', 'Moderator'); // Include user-role header
+    expect(res.status).toEqual(200);
+    expect(res.body).toHaveLength(2); // We have added two articles to the archive, so we expect the length of res.body to be 2
+    expect(res.body.some(article => article.title === 'Rejected by Moderator')).toBeTruthy();
+    expect(res.body.some(article => article.title === 'Rejected by Analyst')).toBeTruthy();
+  });
+
+  it('should return 403 if not a moderator for GET /api/moderator/archive', async () => {
+    const res = await request(server).get('/api/moderator/archive'); // No user-role header
+    expect(res.statusCode).toEqual(403);
+    expect(res.body.error).toEqual('Access Denied: You are not a Moderator!');
+  });
+
+  it('should return appropriate error message if no articles in the archive', async () => {
+    // Delete all the articles to make Archive empty
+    await Article.deleteMany({});
+    
+    const res = await request(server).get('/api/moderator/archive').set('user-role', 'Moderator'); // Include user-role header
+    expect(res.status).toEqual(404);
+    expect(res.body.noarticlesfound).toEqual('No Articles found in the archive');
+  });
+
 });
-
-  // Test for DELETE /api/moderator/:id route
-// it('should delete article in the moderation queue on DELETE /api/moderator/:id', async () => {
-//   // Create an article for testing
-//   const article = await Article.create({ 
-//     title: 'Test Article for Delete', 
-//     authors: 'michael', 
-//     journalName: 'Test', 
-//     pubYear:'1', 
-//     volume:'1', 
-//     pages:'1', 
-//     doi:'Test', 
-//     claims: 'Test', 
-//     method:'Test', 
-//     isApprovedByModerator: false,
-//     isRejectedByModerator: false,
-//   });
-  
-//   const res = await request(server).delete(`/api/moderator/${article.id}`);
-//   // console.log(res.body);
-
-//   expect(res.status).toEqual(200);
-//   expect(res.body.msg).toEqual('Article entry deleted successfully');
-  
-//   // Check if the article is actually deleted from the database
-//   const foundArticle = await Article.findById(article.id);
-//   expect(foundArticle).toBeNull();
-// });
-
-// // Test for trying to delete non-existing article
-// it('should return 404 error when trying to delete non-existing article', async () => {
-//   const nonExistingId = 'someNonExistingId';
-//   const res = await request(server).delete(`/api/moderator/${nonExistingId}`);
-  
-//   expect(res.status).toEqual(404);
-//   expect(res.body.error).toEqual('No such an article');
-// });
-
-  // it('should list ALL articles in the moderation queue on /api/moderator GET', async () => {
-  //   // Create one article for testing
-  //   await Article.create({ title: 'Test Article', authors: 'michael', journalName: 'Test', pubYear:'1', volume:'1', pages:'1', doi:'Test', claims: 'Test', method:'Test', inModerationQueue: true });
-  //   // Moderator 세션을 설정해야 합니다.
-    
-  //   const res = await request(server)
-  //   .post('/api/login') // 로그인 API 경로를 사용해주세요.
-  //   .send({
-  //     username: 'moderatorUsername',
-  //     password: 'moderatorPassword',
-  //   });
-
-  //   // 세션 쿠키를 저장합니다.
-  //   const moderatorSessionCookie = res.headers['set-cookie'];
-
-
-  //   const res = await request(server)
-  //     .get('/api/moderator')
-  //     .set('Cookie', `session=${moderatorSessionCookie}`); // 여기에 올바른 세션 쿠키를 설정하세요.
-
-  //   expect(res.status).toEqual(200);
-  //   expect(res.body).toHaveLength(1);
-  //   expect(res.body[0].title).toEqual('Test Article');
-  // });
-
-  // it('should return appropriate error message if no articles in the moderation queue', async () => {
-  //   // Delete all the articles to make Moderation Queue empty
-  //   await Article.deleteMany({});
-
-  //   const moderatorSessionCookie = 'YOUR_MODERATOR_SESSION_COOKIE';
-    
-  //   const res = await request(server)
-  //     .get('/api/moderator')
-  //     .set('Cookie', `session=${moderatorSessionCookie}`); // 여기에 올바른 세션 쿠키를 설정하세요.
-      
-  //   expect(res.status).toEqual(404);
-  //   expect(res.body.noarticlesfound).toEqual('No Articles found in the moderation queue');
-  // });
