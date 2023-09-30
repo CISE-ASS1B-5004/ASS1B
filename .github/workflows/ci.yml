@@ -22,14 +22,18 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      
-      - name: Install dependencies
+
+      - name: Install dependencies in backend
+        working-directory: ./backend
+        run: npm install
+        
+      - name: Run the tests
+        working-directory: ./backend
+        run: npm test
+
+      - name: Install dependencies in frontend
         working-directory: ./frontend
         run: npm install
-      
-      # - name: Run the tests
-      #   working-directory: ./cise_ass1a_worksheet2/cise_ass1a_worksheet2-frontend
-      #   run: npm test
 
       - name: Build
         working-directory: ./frontend
