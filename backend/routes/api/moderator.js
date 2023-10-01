@@ -44,9 +44,12 @@ router.put("/approve/:id", (req, res) => {
     { isApprovedByModerator: true },
     { new: true } // Return the updated object
   )
-  .then((article) => res.json({ msg: "Updated successfully" }))
+  .then((article) => 
+    console.log("Approved"),
+    res.json({ msg: "Updated successfully" }))
   .catch((err) =>
-    res.status(400).json({ error: "Unable to update the Database" })
+    res.status(400).json({ error: "Unable to update the Database" }),
+    console.log("Cannot approve")
   );
 });
 

@@ -25,7 +25,7 @@ const Login = () => {
       console.log("Logged in as Analyst");
       setUserRole("Analyst");
       // Navigate to analyst page or set up some session state
-      router.push("/");
+      router.push("/analyst");
     } else {
       console.log("Incorrect password or role selection");
     }

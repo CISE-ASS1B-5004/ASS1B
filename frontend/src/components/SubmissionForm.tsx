@@ -20,6 +20,13 @@ export default function SubmissionForm() {
         },
       });
 
+      console.log("URL:", url);
+      console.log("Data:", data);
+      console.log("Headers:", {
+        "Content-Type": "application/json",
+      });
+      
+
       console.log("Submitted successfully!");
       setIsSubmitted(true);
       reset(); // Reset the form fields
