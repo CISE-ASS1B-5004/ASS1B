@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useUserRole } from "../../components/UserContext";
 import { useRouter } from 'next/router'; 
+import tableStyles from "../../components/table/SortableTable.module.scss";
 
 
 interface ArticlesInterface {
@@ -26,9 +27,7 @@ const Articles: React.FC = () => {
 
   useEffect(() => {
     axios
-    .get("http://localhost:8082/api/analyst/test", {
-
-      // .get("http://localhost:8082/api/analyst", {
+      .get("http://localhost:8082/api/analyst", {
         headers: { 'user-role': userRole } // send user role in headers
       })
       .then((response) => {
@@ -85,7 +84,7 @@ const Articles: React.FC = () => {
           ) : articles.length === 0 ? (
             <div>No Articles found in the analysis queue</div>
           ) : (
-            <table>
+            <table className={tableStyles.table}>
               <thead>
                 <tr>
                   <th>Title</th>
@@ -113,8 +112,7 @@ const Articles: React.FC = () => {
                     <td>{article.claims}</td>
                     <td>{article.method}</td>
                     <td>
-                      <button onClick={() => handleApprove(article._id)}>Approve</button>
-                      <button onClick={() => handleReject(article._id)}>Reject</button>
+                      <button>Add evidence</button>
                     </td>
                   </tr>
                 ))}

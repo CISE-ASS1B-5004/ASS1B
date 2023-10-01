@@ -29,13 +29,23 @@ const ArticleSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  method: {
+    type: String,
+    required: true,
+  },
   claims: {
     type: String,
     required: true,
   },
-  method: {
+  isForClaim: {
+    type: Boolean,
+    default: false,
+  },
+  strengthOfClaim: {
     type: String,
-    required: true,
+  },
+  evidence: {
+    type: String,
   },
   isApprovedByModerator: {
     type: Boolean,
