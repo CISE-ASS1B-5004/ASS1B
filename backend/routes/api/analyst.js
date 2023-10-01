@@ -39,16 +39,14 @@ router.get("/evidence/:id", (req, res) => {
     return res.status(403).json({ error: "Access Denied: You are not an Analyst!" });
   }
 
-  Article.find.params.id
-    .then((articles) => {
-      if (articles.length === 0) {
-        return res.status(404).json({ noarticlesfound: "No Articles found in the analysis queue" });
-      }
-      res.json(articles);
+  Article.findById(req.params.id)
+    .then((article) => {
+      res.json(article);
     })
+    
     .catch((err) =>
-      res.status(500).json({ error: "An error occurred while retrieving the articles" })
-  );
+      res.status(404).json({ noarticlefound: "No Article found" })
+    );
 });
 
 // @route PUT api/analyst/approve/:id

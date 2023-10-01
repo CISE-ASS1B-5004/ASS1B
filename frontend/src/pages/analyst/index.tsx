@@ -20,11 +20,18 @@ interface ArticlesInterface {
   method: string;
 }
 
+
+// function navigateToEvidenceFormPage(Id: string) {
+//   const router = useRouter();
+//   router.push(`/path/to/evidence-form?articleId=${Id}`);
+// }
+
 const Articles: React.FC = () => {
   const [articles, setArticles] = useState<ArticlesInterface[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useUserRole(); // Get the user role using the hook
   const [articleId, setArticleId] = useState(String);
+
 
   useEffect(() => {
     axios
@@ -49,7 +56,8 @@ const Articles: React.FC = () => {
 
   function handleAddingEvidence(ID: string) {
     setArticleId(ID);
-    router.push("/analyst/EvidenceForm");
+    // router.push("/analyst/EvidenceForm");
+   router.push(`/analyst/EvidenceForm?articleId=${ID}`);
     // throw new Error("Function not implemented.");
   }
 

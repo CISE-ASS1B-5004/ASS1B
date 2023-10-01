@@ -1,5 +1,4 @@
 import { GetStaticProps, NextPage } from "next";
-import SortableTable from "../../components/table/SortableTable";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useUserRole } from "../../components/UserContext";
@@ -27,26 +26,39 @@ const EvidenceForm: React.FC = () => {
   const [articles, setArticles] = useState<ArticlesInterface[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useUserRole(); // Get the user role using the hook
-  const [articleId, setArticleId] = useState(String);
+  // const [articleId, setArticleId] = useState(String);
+
+
+  const router = useRouter();
+  const articleId = router.query.articleId;
+
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:8082/api/analyst/evidence${articleId}`, {
-        headers: { 'user-role': userRole } // send user role in headers
-      })
-      .then((response) => {
-        const fetchedArticles: ArticlesInterface[] = response.data.map((article: any) => ({
-          ...article,
-          id: article._id // Ensure the correct id is set here
-        }));
-        setArticles(fetchedArticles);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching articles:", error);
-        setIsLoading(false);
-      });
-  }, [userRole]); // Add userRole as a dependency, so if it changes, this effect runs again.
+    // if(!articleId) {
+    //   //do not make API call
+    //   setIsLoading(false);
+    //   return;
+    // }
+    console.log(`role: ${userRole}`);
+    console.log(`id: ${articleId}`);
+
+    
+
+
+     axios
+    .get(`http://localhost:8082/api/analyst/evidence/${articleId}`, {
+      headers: { 'user-role': userRole }
+    })
+    .then((response) => {
+      const fetchedArticle: ArticlesInterface = response.data; // Assuming the API returns a single article
+      setArticles([fetchedArticle]); // Place the fetched article in an array
+      setIsLoading(false);
+    })
+    .catch((error) => {
+      console.error("Error fetching article:", error);
+      setIsLoading(false);
+    });
+}, [userRole, articleId]); // Add userRole as a dependency, so if it changes, this effect runs again.
 
 
     return (
