@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useUserRole } from "../../components/UserContext";
 import { useRouter } from 'next/router'; 
-import tableStyles from "../../components/table/SortableTable.module.scss";
+
 
 
 interface ArticlesInterface {
@@ -16,11 +16,14 @@ interface ArticlesInterface {
   volume: string;
   pages: string;
   doi: string;
-  claims: string;
   method: string;
+  claims: string;
+  forClaim: boolean;
+  strengthofClaim: string;
+  evidence: string;
 }
 
-const Articles: React.FC = () => {
+const EvidenceForm: React.FC = () => {
   const [articles, setArticles] = useState<ArticlesInterface[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useUserRole(); // Get the user role using the hook
@@ -28,7 +31,7 @@ const Articles: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8082/api/analyst", {
+      .get(`http://localhost:8082/api/analyst/evidence${articleId}`, {
         headers: { 'user-role': userRole } // send user role in headers
       })
       .then((response) => {
@@ -45,35 +48,20 @@ const Articles: React.FC = () => {
       });
   }, [userRole]); // Add userRole as a dependency, so if it changes, this effect runs again.
 
-  const router = useRouter();
 
-  function handleAddingEvidence(ID: string) {
-    setArticleId(ID);
-    router.push("/analyst/EvidenceForm");
-    // throw new Error("Function not implemented.");
-  }
-
-  useEffect(() => {
-    console.log(`Article id: ${articleId}`);
-  }, [articleId]);
-
-  return (
-    <div className="container">
-      {userRole !== 'Analyst' ? (
-        <div style={{ color: 'red', textAlign: 'center', marginTop: '20px' }}>
-          <h1>403 Access Denied</h1>
-          <p>You do not have permission to view this page.</p>
-        </div>
-      ) : (
-        <>
-          <h1>Analyst Index Page</h1>
-          <p>Page containing a table of articles in analysis queue:</p>
-          {isLoading ? (
-            <div>Loading...</div>
-          ) : articles.length === 0 ? (
-            <div>No Articles found in the analysis queue</div>
+    return (
+        <div className="container">
+          {userRole !== 'Analyst' ? (
+            <div style={{ color: 'red', textAlign: 'center', marginTop: '20px' }}>
+              <h1>403 Access Denied</h1>
+              <p>You do not have permission to view this page.</p>
+            </div>
           ) : (
-            <table className={tableStyles.table}>
+            <>
+              <h1>Analysis Index Page</h1>
+              {isLoading ? (
+                <div>Loading...</div>
+              ) : <table>
               <thead>
                 <tr>
                   <th>Title</th>
@@ -101,17 +89,18 @@ const Articles: React.FC = () => {
                     <td>{article.claims}</td>
                     <td>{article.method}</td>
                     <td>
-                      <button onClick={() => handleAddingEvidence(article._id)}>Add evidence</button>
+                      {/* <button onClick={() => handleApprove(article._id)}>Approve</button>
+                      <button onClick={() => handleReject(article._id)}>Reject</button> */}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+              }
+            </>
           )}
-        </>
-      )}
-    </div>
-  );
-};
+        </div>
+      );
+}
 
-export default Articles;
+export default EvidenceForm;

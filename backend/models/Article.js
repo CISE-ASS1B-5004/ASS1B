@@ -43,9 +43,12 @@ const ArticleSchema = new mongoose.Schema({
   },
   strengthOfClaim: {
     type: String,
+    default: "",
+
   },
   evidence: {
     type: String,
+    default: "",
   },
   isApprovedByModerator: {
     type: Boolean,
