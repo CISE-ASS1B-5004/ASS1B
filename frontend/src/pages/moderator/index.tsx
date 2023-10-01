@@ -2,7 +2,8 @@ import { GetStaticProps, NextPage } from "next";
 import SortableTable from "../../components/table/SortableTable";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useUserRole } from "../../components/UserContext"; // make sure path is correct
+import { useUserRole } from "../../components/UserContext";
+import { useRouter } from 'next/router'; 
 
 interface ArticlesInterface {
   _id: string;
@@ -41,6 +42,12 @@ const Articles: React.FC = () => {
       });
   }, [userRole]); // Add userRole as a dependency, so if it changes, this effect runs again.
 
+  const router = useRouter();
+
+  const handleNavigateToArchive = () => {
+    router.push('/moderator/archive'); // Navigate to the archive page
+  };
+
   const handleApprove = (id: string) => {
     axios
       .put(`http://localhost:8082/api/moderator/approve/${id}`, {}, {
@@ -62,6 +69,7 @@ const Articles: React.FC = () => {
       })
       .catch((error) => console.error("Error rejecting article:", error));
   };
+
   return (
     <div className="container">
       {userRole !== 'Moderator' ? (
@@ -72,6 +80,9 @@ const Articles: React.FC = () => {
       ) : (
         <>
           <h1>Moderator Index Page</h1>
+          <button onClick={handleNavigateToArchive} style={{ display: 'block', marginBottom: '20px' }}>
+            Go to Archive
+          </button>
           <p>Page containing a table of articles with moderation queue:</p>
           {isLoading ? (
             <div>Loading...</div>
