@@ -44,7 +44,7 @@ const SearchPage: React.FC = () => {
   useEffect(() => {
     // Fetch articles from the API when the component mounts
     axios
-      .get("http://localhost:8082/api/articles")
+      .get("https://speed-backend-iota.vercel.app/api/articles")
       .then((response) => {
         const data = response.data;
         console.log(data);
