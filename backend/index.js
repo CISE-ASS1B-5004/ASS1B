@@ -10,15 +10,24 @@ const moderator = require("./routes/api/moderator");
 const app = express();
 
 // Connect Database
-connectDB();
+connectDB()
+  .then(() => {
+    console.log("MongoDB is Connected...");
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err.message);
+    process.exit(1);
+  });
 
 // cors
 app.use(cors({ origin: true, credentials: true }));
 
 // Init Middleware
-app.use(express.json({ extended: false }));
+app.use(express.json());
 
-app.get("/", (req, res) => res.status(200).json('Welcome, your app is working well'));
+app.get("/", (req, res) =>
+  res.status(200).json("Welcome, your app is working well")
+);
 
 // use Routes
 app.use("/api/articles", books);
@@ -26,6 +35,11 @@ app.use("/api/moderator", moderator);
 
 const port = process.env.PORT || 8082; // Use the PORT environment variable or default to 8082
 
-const server = app.listen(port, () => console.log(`Server running on port ${port}`));
+// Ensure that server.listen is only called when this script is run as the main module
+if (require.main === module) {
+  const server = app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
 
-module.exports = server;
+  module.exports = server;
+}
