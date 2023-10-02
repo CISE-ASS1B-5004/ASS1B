@@ -42,4 +42,6 @@ if (require.main === module) {
   });
 
   module.exports = server;
+} else {
+  module.exports = server;
 }
