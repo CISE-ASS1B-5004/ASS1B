@@ -1,6 +1,7 @@
 import { GetStaticProps, NextPage } from "next";
 import SortableTable from "../../components/table/SortableTable";
 import { useEffect, useState } from "react";
+import * as React from 'react';
 import axios from "axios";
 import { useUserRole } from "../../components/UserContext";
 import { useRouter } from 'next/router'; 
@@ -20,17 +21,13 @@ interface ArticlesInterface {
   method: string;
 }
 
-
-// function navigateToEvidenceFormPage(Id: string) {
-//   const router = useRouter();
-//   router.push(`/path/to/evidence-form?articleId=${Id}`);
-// }
-
 const Articles: React.FC = () => {
   const [articles, setArticles] = useState<ArticlesInterface[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useUserRole(); // Get the user role using the hook
   const [articleId, setArticleId] = useState(String);
+  const [claimStrength, setClaimStrength] = useState("Weak");
+  const [forClaim, setForClaim] = useState("For");
 
 
   useEffect(() => {
@@ -52,18 +49,57 @@ const Articles: React.FC = () => {
       });
   }, [userRole]); // Add userRole as a dependency, so if it changes, this effect runs again.
 
-  const router = useRouter();
-
-  function handleAddingEvidence(ID: string) {
-    setArticleId(ID);
-    // router.push("/analyst/EvidenceForm");
-   router.push(`/analyst/EvidenceForm?articleId=${ID}`);
-    // throw new Error("Function not implemented.");
-  }
-
   useEffect(() => {
     console.log(`Article id: ${articleId}`);
   }, [articleId]);
+
+  const router = useRouter();
+
+  const handleNavigateToArchive = () => {
+    router.push('/analyst/archive'); // Navigate to the archive page
+  };
+
+  function updateArticle(id: string){
+    axios
+      .put(`http://localhost:8082/api/analyst/update/${id}/${claimStrength}/${forClaim}`, {}, {
+        headers: { 'user-role': userRole } // send user role in headers
+      })
+      .then(() => {
+        setArticles(articles.filter(article => article._id !== id));
+        console.log('Approved!');
+      })
+      .catch((error) => console.error("Error approving article:", error));
+
+  }
+
+  const handleApprove = (id: string) => {
+    console.log(`claim strenght: ${claimStrength} for ${id}`);
+    console.log(`For/Against: ${forClaim} for ${id}`);
+
+    updateArticle(id);
+
+    axios
+      .put(`http://localhost:8082/api/moderator/approve/${id}`, {}, {
+        headers: { 'user-role': userRole } // send user role in headers
+      })
+      .then(() => {
+        setArticles(articles.filter(article => article._id !== id));
+        console.log('Approved!');
+      })
+      .catch((error) => console.error("Error approving article:", error));
+  };
+
+  const handleReject = (id: string) => {
+    axios
+      .put(`http://localhost:8082/api/analyst/reject/${id}`, {}, {
+        headers: { 'user-role': userRole } // send user role in headers
+      })
+      .then(() => {
+        console.log('Rejected!');
+        setArticles(articles.filter(article => article._id !== id));
+      })
+      .catch((error) => console.error("Error rejecting article:", error));
+  };
 
   return (
     <div className="container">
@@ -75,6 +111,9 @@ const Articles: React.FC = () => {
       ) : (
         <>
           <h1>Analyst Index Page</h1>
+          <button onClick={handleNavigateToArchive} style={{ display: 'block', marginBottom: '20px' }}>
+            Go to Archive
+          </button>
           <p>Page containing a table of articles in analysis queue:</p>
           {isLoading ? (
             <div>Loading...</div>
@@ -109,9 +148,30 @@ const Articles: React.FC = () => {
                     <td>{article.claims}</td>
                     <td>{article.method}</td>
                     <td>
-                      <button onClick={() => handleAddingEvidence(article._id)}>Add evidence</button>
+                    {/* Dropdown menus */}
+                    <div className="dropdownMenus">
+                    <div className="strenghtDropdown">
+                      <label>Strength Of Claim</label>
+                    <select value={claimStrength} onChange={(event) => { setClaimStrength(event.target.value);}}>
+                      <option value="Weak">Weak</option>
+                      <option value="Average">Average</option>
+                      <option value="Strong">Strong</option>
+                    </select>
+                    </div>
+                    <div className="to/forClaim">
+                      <label>For/Against claim</label>
+                    <select  value={forClaim} onChange={(event) => { setForClaim(event.target.value);}}>
+                      <option value="For">For</option>
+                      <option value="Against">Against</option>
+                    </select>
+                    </div>
+                    </div>
                     </td>
-                  </tr>
+                    <td>
+                    <button onClick={() => handleApprove(article._id)}>Approve</button>
+                    <button onClick={() => handleReject(article._id)}>Reject</button>
+                    </td>
+                    </tr>
                 ))}
               </tbody>
             </table>

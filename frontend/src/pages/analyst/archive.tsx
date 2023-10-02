@@ -2,6 +2,7 @@ import { GetStaticProps, NextPage } from "next";
 import SortableTable from "../../components/table/SortableTable";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useUserRole } from "../../components/UserContext";
 
 interface ArticlesInterface {
   title: string;
@@ -31,15 +32,18 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
     { key: "method", label: "Method" },
   ];
 
-  const [articles, setArticles] = useState(initialArticles);
+  const [articles, setArticles] = useState(initialArticles || []);
   const [isLoading, setIsLoading] = useState(true);
+  const [userRole, setUserRole] = useUserRole();
 
   useEffect(() => {
     // Fetch articles from the API
     axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/api/articles`)
+      .get("http://localhost:8082/api/analyst/archive", {
+        headers: { 'user-role': userRole } // send user role in headers
+      })
       .then((response) => {
-        const data = response.data;
+        const data = response.data || [];
         console.log(data);
         const fetchedArticles: ArticlesInterface[] = data.map(
           (article: any) => ({
@@ -52,8 +56,6 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
             pages: article.pages,
             doi: article.doi,
             claims: article.claims,
-            strengthOfClaim: article.strengthOfClaim,
-            isForClaim: article.isForClaim,
             method: article.method,
           })
         );
@@ -64,14 +66,16 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
         console.error("Error fetching articles:", error);
         setIsLoading(false); // An error occurred while fetching
       });
-  }, []);
+  }, [userRole]);
 
   return (
     <div className="container">
-      <h1>Articles Index Page</h1>
-      <p>Page containing a table of articles:</p>
+      <h1>Analyst Archive Index Page</h1>
+      <p>Page containing a table of archived articles which are rejected by Moderator or Analyst:</p>
       {isLoading ? (
         <div>Loading...</div>
+      ) : articles?.length === 0 ? (  // using optional chaining to prevent when article is undefined
+        <div>No Articles found in the archive list</div>
       ) : (
         <SortableTable headers={headers} data={articles} />
       )}

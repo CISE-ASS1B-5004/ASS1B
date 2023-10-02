@@ -18,7 +18,7 @@ router.get("/", (req, res) => {
     return res.status(403).json({ error: "Access Denied: You are not an Analyst!" });
   }
 
-  Article.find({ isApprovedByModerator: true })
+  Article.find({ isApprovedByModerator: true, isRejectedByAnalyst: false, isApprovedByAnalyst: false })
     .then((articles) => {
       if (articles.length === 0) {
         return res.status(404).json({ noarticlesfound: "No Articles found in the analysis queue" });
@@ -64,6 +64,71 @@ router.put("/approve/:id", (req, res) => {
     { new: true } // Return the updated object
   )
   .then((article) => res.json({ msg: "Updated successfully" }))
+  .catch((err) =>
+    res.status(400).json({ error: "Unable to update the Database" })
+  );
+});
+
+// @route PUT api/analyst/reject/:id
+// @description Reject an article in the moderation queue
+// @access Analyst only
+router.put('/reject/:id', (req, res) => {
+  const userRole = req.get('user-role');
+  if (userRole !== 'Analyst') {
+    return res.status(403).json({ error: "Access Denied: You are not an Analyst!" });
+  }
+
+  Article.findByIdAndUpdate(
+    req.params.id, 
+    { isRejectedByAnalyst: true },
+    { new: true } // Return the updated object
+  )
+  .then((article) => res.json({ msg: "Updated successfully" }))
+  .catch((err) =>
+    res.status(400).json({ error: "Unable to update the Database" })
+  );
+});
+
+// @route GET api/analyst/archive
+// @description Get all articles in the archive
+// @access Analyst only
+router.get("/archive", (req, res) => {
+  const userRole = req.get('user-role');
+  if (userRole !== 'Analyst') {
+    return res.status(403).json({ error: "Access Denied: You are not a Moderator!" });
+  }
+
+  // Find articles that are rejected by either Moderator or Analyst
+  Article.find({ $or: [{ isRejectedByModerator: true }, { isRejectedByAnalyst: true }] })
+    .then((articles) => {
+      if (articles.length === 0) {
+        return res.status(404).json({ noarticlesfound: "No Articles found in the archive" });
+      }
+      res.json(articles);
+    })
+    .catch((err) =>
+      res.status(500).json({ error: "An error occurred while retrieving the articles" })
+  );
+});
+
+// @route GET api/analyst/:id
+// @description Update article
+// @access Analyst
+router.put("/update/:id/:claimStrength/:forClaim", (req, res) => {
+ 
+  Article.findByIdAndUpdate(
+    req.params.id, 
+    { claimStrength: req.params.claimStrength,
+      forClaim: req.params.forClaim,
+    },
+    { new: true } // Return the updated object
+  ) 
+  .then((article) => {
+    if (!article) {
+      return res.status(404).json({ error: "Article not found" });
+    }
+    return res.json({ msg: "Updated successfully", article });
+  })
   .catch((err) =>
     res.status(400).json({ error: "Unable to update the Database" })
   );

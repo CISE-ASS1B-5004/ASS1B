@@ -46,10 +46,6 @@ const ArticleSchema = new mongoose.Schema({
     default: "",
 
   },
-  evidence: {
-    type: String,
-    default: "",
-  },
   isApprovedByModerator: {
     type: Boolean,
     default: false,
