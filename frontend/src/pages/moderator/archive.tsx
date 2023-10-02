@@ -39,8 +39,8 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
   useEffect(() => {
     // Fetch articles from the API
     axios
-      .get("http://localhost:8082/api/moderator/archive", {
-        headers: { 'user-role': userRole } // send user role in headers
+      .get("https://speed-backend-iota.vercel.app/api/moderator/archive", {
+        headers: { "user-role": userRole }, // send user role in headers
       })
       .then((response) => {
         const data = response.data || [];
@@ -71,10 +71,13 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
   return (
     <div className="container">
       <h1>Articles Index Page</h1>
-      <p>Page containing a table of archived articles which are rejected by Moderator or Analyst:</p>
+      <p>
+        Page containing a table of archived articles which are rejected by
+        Moderator or Analyst:
+      </p>
       {isLoading ? (
         <div>Loading...</div>
-      ) : articles?.length === 0 ? (  // using optional chaining to prevent when article is undefined
+      ) : articles?.length === 0 ? ( // using optional chaining to prevent when article is undefined
         <div>No Articles found in the archive list</div>
       ) : (
         <SortableTable headers={headers} data={articles} />
