@@ -35,16 +35,16 @@ app.use("/api/moderator", moderator);
 
 const port = process.env.PORT || 8082; // Use the PORT environment variable or default to 8082
 
-// Ensure that server.listen is only called when this script is run as the main module
-if (require.main === module) {
-  const server = app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-  });
+let server; // Declare the server variable
 
-  module.exports = server;
-} else {
-  const server = app.listen(port, () => {
+if (!server) {
+  // Check if server is not already defined
+  server = app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
   });
-  module.exports = server;
+} else {
+  // Throw an exception if server is already defined
+  throw new Error("Server is already listening.");
 }
+
+module.exports = server;
