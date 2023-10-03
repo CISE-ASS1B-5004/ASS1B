@@ -8,7 +8,7 @@ export default function SubmissionForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const onSubmit = async (data: any) => {
-    const url = "https://speed-backend-iota.vercel.app/api/articles";
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/articles`;
 
     try {
       const realAuthors = data.authors.split(",");
