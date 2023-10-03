@@ -1,6 +1,5 @@
 import { GetStaticProps, NextPage } from "next";
 import SortableTable from "../../components/table/SortableTable";
-import data from "../../utils/dummydata.json";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
