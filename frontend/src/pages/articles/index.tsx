@@ -38,7 +38,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
   useEffect(() => {
     // Fetch articles from the API
     axios
-      .get("https://speed-backend-iota.vercel.app/api/articles")
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/api/articles`)
       .then((response) => {
         const data = response.data;
         console.log(data);

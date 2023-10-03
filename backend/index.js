@@ -1,7 +1,18 @@
+const dotenv = require('dotenv');
+switch (process.env.NODE_ENV) {
+  case 'development':
+    dotenv.config({ path: '.env.development' });
+    break;
+  case 'test':
+    dotenv.config({ path: '.env.test' });
+    break;
+  default:
+    dotenv.config();
+}
+
 const express = require("express");
 const connectDB = require("./config/db");
 const cors = require("cors");
-require("dotenv").config(); // Load environment variables
 
 // routes
 const books = require("./routes/api/articles");
@@ -12,7 +23,7 @@ const app = express();
 // Connect Database
 connectDB()
   .then(() => {
-    console.log("MongoDB is Connected...");
+    console.log("connectDB() done with ",process.env.NODE_ENV);
   })
   .catch((err) => {
     console.error("MongoDB connection error:", err.message);
@@ -24,6 +35,7 @@ app.use(cors({ origin: true, credentials: true }));
 
 // Init Middleware
 app.use(express.json());
+// app.use(express.json({ extended: false }));
 
 app.get("/", (req, res) =>
   res.status(200).json("Welcome, your app is working well")
@@ -33,10 +45,14 @@ app.get("/", (req, res) =>
 app.use("/api/articles", books);
 app.use("/api/moderator", moderator);
 
-const port = process.env.PORT || 8082; // Use the PORT environment variable or default to 8082
+if (process.env.NODE_ENV !== 'production') {
+  const port = process.env.PORT || 8082;
+  const server = app.listen(port, () => console.log(`Server running on port ${port}`));
 
-const server = app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+  module.exports = { app, server };
+} else{
+  const port = process.env.PORT || 8082; // Use the PORT environment variable or default to 8082
 
+  app.listen(port, () => console.log(`Server is running on port ${port}`));
+}
 // module.exports = server;

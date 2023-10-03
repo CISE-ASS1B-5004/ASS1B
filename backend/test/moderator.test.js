@@ -1,19 +1,23 @@
+require('dotenv').config({ path: '.env.test' });
 const request = require('supertest');
-const server = require('../index');
+const { server } = require('../index');
 const mongoose = require('mongoose');
 
 describe('Moderator API', () => {
   let articleId;
   beforeAll(async () => {
+    console.log(`${process.env.NODE_ENV} running`);
     await Article.deleteMany({}); // Clear the articles
+
   });
 
   afterAll(async () => {
-    await Article.deleteMany({}); // Clear the articles
     await mongoose.connection.close();
-    server.close();
+    if (['test', 'development'].includes(process.env.NODE_ENV)) {
+      server.close();
+    }
   });
-  
+
   // Testing for moderator/test route 
   it('should return moderator route testing! for GET /api/moderator/test', async () => {
     const res = await request(server).get('/api/moderator/test');
@@ -31,16 +35,16 @@ describe('Moderator API', () => {
   // Testing whether the page shows only one article when it has been added one article in the queue
   it('should list ALL articles in the moderation queue on /api/moderator GET', async () => {
     // Create one article for testing
-    await Article.create({ 
-      title: 'Test Article', 
-      authors: 'michael', 
-      journalName: 'Test', 
-      pubYear:'1', 
-      volume:'1', 
-      pages:'1', 
-      doi:'Test', 
-      claims: 'Test', 
-      method:'Test', 
+    await Article.create({
+      title: 'Test Article',
+      authors: 'michael',
+      journalName: 'Test',
+      pubYear: '1',
+      volume: '1',
+      pages: '1',
+      doi: 'Test',
+      claims: 'Test',
+      method: 'Test',
       isApprovedByModerator: false,
       isRejectedByModerator: false,
     });
@@ -55,7 +59,7 @@ describe('Moderator API', () => {
   it('should return appropriate error message if no articles in the moderation queue', async () => {
     // Delete all the articles to make Moderation Queue empty
     await Article.deleteMany({});
-    
+
     const res = await request(server).get('/api/moderator').set('user-role', 'Moderator'); // Include user-role heade
 
     // console.log(res.body);
@@ -66,16 +70,16 @@ describe('Moderator API', () => {
 
   // Testing PUT /api/moderator/approve/:id
   it('should successfully approve an article in the moderation queue', async () => {
-    const newArticle = await Article.create({ 
-      title: 'Test Article', 
-      authors: 'michael', 
-      journalName: 'Test', 
-      pubYear:'1', 
-      volume:'1', 
-      pages:'1', 
-      doi:'Test', 
-      claims: 'Test', 
-      method:'Test', 
+    const newArticle = await Article.create({
+      title: 'Test Article',
+      authors: 'michael',
+      journalName: 'Test',
+      pubYear: '1',
+      volume: '1',
+      pages: '1',
+      doi: 'Test',
+      claims: 'Test',
+      method: 'Test',
       isApprovedByModerator: false,
       isRejectedByModerator: false,
     });
@@ -94,16 +98,16 @@ describe('Moderator API', () => {
   // Testing PUT /api/moderator/reject/:id
   it('should successfully reject an article in the moderation queue', async () => {
     // Create another article for rejection testing, as the previous one is already approved
-    const anotherArticle = await Article.create({ 
-      title: 'Test Article 2', 
-      authors: 'michael', 
-      journalName: 'Test', 
-      pubYear:'1', 
-      volume:'1', 
-      pages:'1', 
-      doi:'Test', 
-      claims: 'Test', 
-      method:'Test', 
+    const anotherArticle = await Article.create({
+      title: 'Test Article 2',
+      authors: 'michael',
+      journalName: 'Test',
+      pubYear: '1',
+      volume: '1',
+      pages: '1',
+      doi: 'Test',
+      claims: 'Test',
+      method: 'Test',
       isApprovedByModerator: false,
       isRejectedByModerator: false,
     });
@@ -125,28 +129,28 @@ describe('Moderator API', () => {
     // Create one article rejected by Moderator for testing
     await Article.create({
       title: 'Rejected by Moderator',
-      authors: 'michael', 
-      journalName: 'Test', 
-      pubYear:'1', 
-      volume:'1', 
-      pages:'1', 
-      doi:'Test', 
-      claims: 'Test', 
-      method:'Test', 
+      authors: 'michael',
+      journalName: 'Test',
+      pubYear: '1',
+      volume: '1',
+      pages: '1',
+      doi: 'Test',
+      claims: 'Test',
+      method: 'Test',
       isRejectedByModerator: true,
     });
-    
+
     // Create one article rejected by Analyst for testing
     await Article.create({
       title: 'Rejected by Analyst',
-      authors: 'michael', 
-      journalName: 'Test', 
-      pubYear:'1', 
-      volume:'1', 
-      pages:'1', 
-      doi:'Test', 
-      claims: 'Test', 
-      method:'Test', 
+      authors: 'michael',
+      journalName: 'Test',
+      pubYear: '1',
+      volume: '1',
+      pages: '1',
+      doi: 'Test',
+      claims: 'Test',
+      method: 'Test',
       isRejectedByAnalyst: true,
     });
 
@@ -166,7 +170,7 @@ describe('Moderator API', () => {
   it('should return appropriate error message if no articles in the archive', async () => {
     // Delete all the articles to make Archive empty
     await Article.deleteMany({});
-    
+
     const res = await request(server).get('/api/moderator/archive').set('user-role', 'Moderator'); // Include user-role header
     expect(res.status).toEqual(404);
     expect(res.body.noarticlesfound).toEqual('No Articles found in the archive');
