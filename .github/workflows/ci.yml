@@ -30,6 +30,8 @@ jobs:
       - name: Run the tests
         working-directory: ./backend
         run: npm test
+        env:
+          NODE_ENV: test
 
       - name: Install dependencies in frontend
         working-directory: ./frontend
