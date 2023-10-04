@@ -1,4 +1,3 @@
-// src/pages/SearchPage.tsx
 import React, { useState, useEffect } from "react";
 import SearchBar from "../../components/SearchBar";
 import axios from "axios";
@@ -44,7 +43,7 @@ const SearchPage: React.FC = () => {
   useEffect(() => {
     // Fetch articles from the API when the component mounts
     axios
-      .get("https://speed-backend-iota.vercel.app/api/articles")
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/api/articles`)
       .then((response) => {
         const data = response.data;
         console.log(data);

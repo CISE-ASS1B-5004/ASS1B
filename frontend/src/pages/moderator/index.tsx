@@ -25,7 +25,7 @@ const Articles: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get("https://speed-backend-iota.vercel.app/api/moderator", {
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/api/moderator`, {
         headers: { "user-role": userRole }, // send user role in headers
       })
       .then((response) => {
@@ -53,7 +53,7 @@ const Articles: React.FC = () => {
   const handleApprove = (id: string) => {
     axios
       .put(
-        `https://speed-backend-iota.vercel.app/api/moderator/approve/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/moderator/approve/${id}`,
         {},
         {
           headers: { "user-role": userRole }, // send user role in headers
@@ -68,7 +68,7 @@ const Articles: React.FC = () => {
   const handleReject = (id: string) => {
     axios
       .put(
-        `https://speed-backend-iota.vercel.app/api/moderator/reject/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/moderator/reject/${id}`,
         {},
         {
           headers: { "user-role": userRole }, // send user role in headers
