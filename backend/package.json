@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test:ci": "jest",
     "test": "cross-env NODE_ENV=test jest",
     "start": "cross-env NODE_ENV=production node index.js",
     "app": "cross-env NODE_ENV=development nodemon index.js"
