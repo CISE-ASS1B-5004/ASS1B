@@ -29,7 +29,11 @@ jobs:
         
       - name: Run the tests
         working-directory: ./backend
-        run: npm test
+        run: npm run test:ci
+        env:
+          NODE_ENV: test
+          PORT: ${{ secrets.PORT }}
+          MONGO_URI: ${{ secrets.TEST_MONGO_URI }}
 
       - name: Install dependencies in frontend
         working-directory: ./frontend
