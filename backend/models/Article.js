@@ -33,9 +33,13 @@ const ArticleSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  claims: {
+  subClaims: {
     type: String,
     required: true,
+  },
+  analystClaims: {
+    type: String,
+    default: "",
   },
   isForClaim: {
     type: Boolean,
@@ -44,7 +48,10 @@ const ArticleSchema = new mongoose.Schema({
   strengthOfClaim: {
     type: String,
     default: "",
-
+  },
+  evidence: {
+    type: String,
+    default: "",
   },
   isApprovedByModerator: {
     type: Boolean,

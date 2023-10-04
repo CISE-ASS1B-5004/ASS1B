@@ -18,7 +18,7 @@ router.get("/", (req, res) => {
     return res.status(403).json({ error: "Access Denied: You are not an Analyst!" });
   }
 
-  Article.find({ isApprovedByModerator: true, isRejectedByAnalyst: false, isApprovedByAnalyst: false })
+  Article.find({ isApprovedByModerator: true, isApprovedByAnalyst: false,  isRejectedByAnalyst: false,})
     .then((articles) => {
       if (articles.length === 0) {
         return res.status(404).json({ noarticlesfound: "No Articles found in the analysis queue" });
@@ -63,11 +63,16 @@ router.put("/approve/:id", (req, res) => {
     { isApprovedByAnalyst: true },
     { new: true } // Return the updated object
   )
-  .then((article) => res.json({ msg: "Updated successfully" }))
-  .catch((err) =>
-    res.status(400).json({ error: "Unable to update the Database" })
-  );
+  .then((article) => {
+    console.log("Approved");
+    res.json({ msg: "Updated successfully" });
+  })
+  .catch((err) => {
+    console.error("Unable to update the Database");
+    res.status(400).json({ error: "Unable to update the Database" });
+  });
 });
+
 
 // @route PUT api/analyst/reject/:id
 // @description Reject an article in the moderation queue
