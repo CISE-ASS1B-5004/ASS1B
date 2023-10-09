@@ -1,0 +1,100 @@
+.page {
+    width: 100%;
+    font-family: 'Roboto', sans-serif;
+    display: grid;
+    place-items: center;
+}
+
+
+.searchInput {
+    display: inline-flex;
+    border-radius: 15px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.searchInput input {
+    border: 2px solid #ccc;
+    /* Add a border for better visibility */
+    border-radius: 15px;
+    padding: 0.5rem;
+    font-size: 16px;
+    /* Adjust font size for better readability */
+    width: 100%;
+    /* Expand input to full width */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Add a subtle shadow for depth */
+    transition: border-color 0.3s, box-shadow 0.3s;
+    /* Smooth transition for border and shadow changes */
+}
+
+/* Style the search input on focus */
+.searchInput input:focus {
+    border-color: #007bff;
+    /* Change border color on focus */
+    outline: none;
+    /* Remove the default focus outline */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+    /* Add a stronger shadow on focus */
+}
+
+.searchInput button {
+    border-radius: 15px;
+    padding: .5rem;
+    margin-left: 1rem;
+    background-color: rgb(110, 154, 192);
+    color: white;
+    border: none;
+    transition: background-color 0.3s;
+    font-size: large;
+}
+
+.searchInput button:hover {
+    background-color: lightblue;
+}
+
+
+.searchbar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &.h2 {
+        align-items: center;
+
+    }
+}
+
+.filters {
+    display: grid;
+    grid-template-columns: auto auto;
+    margin: 12px;
+}
+
+.methodFilter,
+.yearFilter {
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+
+.methodFilter label,
+.yearFilter label {
+    border-radius: 15px;
+    padding: 0.5rem;
+    width: 100%;
+    grid-column: 1;
+    justify-self: center;
+    text-align: end;
+}
+
+.methodFilter select,
+.yearFilter input {
+    border-radius: 15px;
+    padding: 0.5rem;
+    margin: 4px;
+    width: min-content;
+    grid-column: 2;
+    align-items: center;
+}

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import SearchBar from "../../components/SearchBar";
 import axios from "axios";
 import SortableTable from "../../components/table/SortableTable";
-import pageStyle from "../pages.module.scss";
+import pageStyle from "../../styles/pages.module.scss";
+import searchCSS from "../../styles/search.module.scss";
 
 interface ArticlesInterface {
   id: string;
@@ -110,37 +111,38 @@ const SearchPage: React.FC = () => {
   };
 
   return (
-    <div className={pageStyle.page}>
+    <div className={searchCSS.page}>
       <h1>Search Page</h1>
-      <div className={pageStyle.searchbar}>
-        <h2>Search Article Title</h2>
+      <div className={searchCSS.searchbar}>
         <SearchBar onSearch={handleSearch} />
       </div>
-      <div className={pageStyle.methodFilter}>
-        <h2>Filter by Method</h2>
-        <select onChange={handleMethodChange} value={selectedMethod}>
-          <option value="">All Methods</option>
-          {methodOptions.map((method) => (
-            <option key={method} value={method}>
-              {method}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className={pageStyle.yearFilter}>
-        <h2>Filter by Year Range</h2>
-        <input
-          type="text"
-          placeholder="Start Year"
-          value={startYear}
-          onChange={handleStartYearChange}
-        />
-        <input
-          type="text"
-          placeholder="End Year"
-          value={endYear}
-          onChange={handleEndYearChange}
-        />
+      <div className={searchCSS.filters}>
+        <div className={searchCSS.yearFilter}>
+          <label>Filter by Year Range</label>
+          <input
+            type="text"
+            placeholder="Start Year"
+            value={startYear}
+            onChange={handleStartYearChange}
+          />
+          <input
+            type="text"
+            placeholder="End Year"
+            value={endYear}
+            onChange={handleEndYearChange}
+          />
+        </div>
+        <div className={searchCSS.methodFilter}>
+          <label>Filter by Method</label>
+          <select onChange={handleMethodChange} value={selectedMethod}>
+            <option value="">All Methods</option>
+            {methodOptions.map((method) => (
+              <option key={method} value={method}>
+                {method}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
       <h2>Search Results</h2>
       {isLoading ? (

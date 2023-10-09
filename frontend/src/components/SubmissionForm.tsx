@@ -35,120 +35,124 @@ export default function SubmissionForm() {
   );
 
   return (
-    <div>
+    <div className={formStyles.content}>
       {confirmationMessage}
       <form
         className={formStyles.form}
         onSubmit={handleSubmit(onSubmit)}
       ></form>
       <form className={formStyles.form} onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label htmlFor="title">Title:</label>
-          <input
-            className={formStyles.input}
-            {...register("title")}
-            type="text"
-            id="title"
-            placeholder="Title"
-            required
-          />
-        </div>
+        <div className={formStyles.formSection}>
+          <div className={formStyles.formItem}>
+            <label htmlFor="title">Title:</label>
+            <input
+              className={formStyles.input}
+              {...register("title")}
+              type="text"
+              id="title"
+              placeholder="Title"
+              required
+            />
+          </div>
 
-        <div>
-          <label htmlFor="authors">Authors (comma-separated):</label>
-          <input
-            className={formStyles.input}
-            {...register("authors")}
-            type="text"
-            id="authors"
-            placeholder="Authors"
-            required
-          />
-        </div>
+          <div className={formStyles.formItem}>
+            <label htmlFor="authors">Authors (comma-separated):</label>
+            <input
+              className={formStyles.input}
+              {...register("authors")}
+              type="text"
+              id="authors"
+              placeholder="Authors"
+              required
+            />
+          </div>
+          <div className={formStyles.formItem}>
+            <label htmlFor="journalName">Journal Name:</label>
+            <input
+              className={formStyles.input}
+              {...register("journalName")}
+              type="text"
+              id="journalName"
+              placeholder="Journal Name"
+              required
+            />
+          </div>
 
-        <div>
-          <label htmlFor="journalName">Journal Name:</label>
-          <input
-            className={formStyles.input}
-            {...register("journalName")}
-            type="text"
-            id="journalName"
-            placeholder="Journal Name"
-            required
-          />
-        </div>
+          <div className={formStyles.formItem}>
+            <label htmlFor="pubYear">Publication Year:</label>
+            <input
+              className={formStyles.input}
+              {...register("pubYear")}
+              type="number"
+              id="pubYear"
+              placeholder="Publication Year"
+              required
+            />
+          </div>
 
-        <div>
-          <label htmlFor="pubYear">Publication Year:</label>
-          <input
-            className={formStyles.input}
-            {...register("pubYear")}
-            type="number"
-            id="pubYear"
-            placeholder="Publication Year"
-            required
-          />
+          <div className={formStyles.formItem}>
+            <label htmlFor="volume">Volume:</label>
+            <input
+              className={formStyles.input}
+              {...register("volume")}
+              type="number"
+              id="volume"
+              placeholder="Volume"
+              required
+            />
+          </div>
         </div>
+        <div className={formStyles.formSection}>
+          <div className={formStyles.formItem}>
+            <label htmlFor="pages">Pages:</label>
+            <input
+              className={formStyles.input}
+              {...register("pages")}
+              type="number"
+              id="pages"
+              placeholder="Pages"
+              required
+            />
+          </div>
 
-        <div>
-          <label htmlFor="volume">Volume:</label>
-          <input
-            className={formStyles.input}
-            {...register("volume")}
-            type="number"
-            id="volume"
-            placeholder="Volume"
-            required
-          />
+          <div className={formStyles.formItem}>
+            <label htmlFor="doi">DOI:</label>
+            <input
+              className={formStyles.input}
+              {...register("doi")}
+              type="text"
+              id="doi"
+              placeholder="DOI"
+              required
+            />
+          </div>
+          <div className={formStyles.formItem}>
+            <label htmlFor="claims">Claims:</label>
+            <input
+              className={formStyles.input}
+              {...register("claims")}
+              type="text"
+              id="claims"
+              placeholder="Claims"
+              required
+            />
+          </div>
+          <div className={formStyles.formItem}>
+            <label htmlFor="method">Method:</label>
+            <input
+              className={formStyles.input}
+              {...register("method")}
+              type="text"
+              id="method"
+              placeholder="Method"
+              required
+            />
+          </div>
+          <div className={formStyles.formItem}>
+            <label>‎ </label>
+            <input type="submit" className={formStyles.buttonItem} />
+          </div>
         </div>
-
-        <div>
-          <label htmlFor="pages">Pages:</label>
-          <input
-            className={formStyles.input}
-            {...register("pages")}
-            type="number"
-            id="pages"
-            placeholder="Pages"
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="doi">DOI:</label>
-          <input
-            className={formStyles.input}
-            {...register("doi")}
-            type="text"
-            id="doi"
-            placeholder="DOI"
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="claims">Claims:</label>
-          <input
-            className={formStyles.input}
-            {...register("claims")}
-            type="text"
-            id="claims"
-            placeholder="Claims"
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="method">Method:</label>
-          <input
-            className={formStyles.input}
-            {...register("method")}
-            type="text"
-            id="method"
-            placeholder="Method"
-            required
-          />
-        </div>
-
-        <input type="submit" className={formStyles.buttonItem} />
       </form>
     </div>
   );
