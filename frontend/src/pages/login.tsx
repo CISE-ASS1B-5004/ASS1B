@@ -14,6 +14,7 @@ const Login = () => {
 
   const moderatorPassword = "abc123"; // Replace with your real password
   const analystPassword = "abc123"; // Replace with your real password
+  const adminPassword = "abc123";
 
   const handleLogin = () => {
     if (role === "Moderator" && password === moderatorPassword) {
@@ -26,6 +27,10 @@ const Login = () => {
       setUserRole("Analyst");
       // Navigate to analyst page or set up some session state
       router.push("/");
+    } else if (role === "Admin" && password === adminPassword) { // New Admin logic
+      console.log("Logged in as Admin");
+      setUserRole("Admin");
+      router.push("/admin"); // Navigate to admin page or wherever you'd like
     } else {
       console.log("Incorrect password or role selection");
     }
@@ -67,6 +72,15 @@ const Login = () => {
           >
             Analyst
           </button>
+          <button
+            className={selectedRole === "Admin" ? styles.selected : ""} // New Admin button
+            onClick={() => {
+              setSelectedRole("Admin");
+              setRole("Admin");
+            }}
+          >
+            Admin
+          </button>
         </div>
         <div className={styles.inputContainer}>
           <label>Password: abc123</label>
@@ -76,7 +90,6 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-
         <div className={styles.loginButton}>
           <button onClick={handleLogin}>Login</button>
         </div>
