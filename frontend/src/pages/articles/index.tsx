@@ -11,8 +11,13 @@ interface ArticlesInterface {
   volume: string;
   pages: string;
   doi: string;
-  claims: string;
+  subClaims: string;
   method: string;
+  strengthOfClaims: string;
+  isForClaim: string;
+  analystClaims: string;
+  evidence: string;
+
 }
 type ArticlesProps = {
   articles: ArticlesInterface[];
@@ -27,8 +32,13 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
     { key: "volume", label: "Volume" },
     { key: "pages", label: "Pages" },
     { key: "doi", label: "DOI" },
-    { key: "claims", label: "Claims" },
+    { key: "subClaims", label: "Submission Claim" },
     { key: "method", label: "Method" },
+    { key: "analystClaims", label: "Analyst Claim" },
+    { key: "strengthOfClaims", label: "Strength Of CLaim" },
+    { key: "isForClaim", label: "For/Against claim" },
+    { key: "evidence", label: "evidence" },
+
   ];
 
   const [articles, setArticles] = useState(initialArticles);
@@ -51,10 +61,12 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
             volume: article.volume,
             pages: article.pages,
             doi: article.doi,
+            subClaims: article.subClaims,
             claims: article.claims,
             strengthOfClaim: article.strengthOfClaim,
             isForClaim: article.isForClaim,
             method: article.method,
+            evidence: article.evidence,
           })
         );
         setArticles(fetchedArticles);

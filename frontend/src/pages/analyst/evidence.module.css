@@ -1,12 +1,27 @@
 .left {
     border: 2px solid red;
+    width: 30vw;
 }
 
 .analystEvidence {
+    width: 60vw;
     border: 2px solid green;
+   display:flex;
+   flex-direction:row;
+   justify-content: center;
 }
 
-.container {
+.analystForm {
+    border: 2px solid Blue;
     display: flex;
     flex-direction: row;
+    height: 50vh;
+}
+
+.menu{
+    justify-self: center;
+}
+
+.evidenceInput {
+    height: 15vh;
 }

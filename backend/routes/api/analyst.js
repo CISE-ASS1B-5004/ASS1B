@@ -42,6 +42,7 @@ router.get("/evidence/:id", (req, res) => {
   Article.findById(req.params.id)
     .then((article) => {
       res.json(article);
+      console.log(id);
     })
     
     .catch((err) =>
@@ -116,15 +117,18 @@ router.get("/archive", (req, res) => {
   );
 });
 
-// @route GET api/analyst/:id
+// @route GET api/analyst/:id/:claimStrength/:forClaim/:method/:evidence/:claim
 // @description Update article
 // @access Analyst
-router.put("/update/:id/:claimStrength/:forClaim", (req, res) => {
+router.put("/:id/:claimStrength/:forClaim/:method/:evidence/:claim", (req, res) => {
  
   Article.findByIdAndUpdate(
     req.params.id, 
-    { claimStrength: req.params.claimStrength,
-      forClaim: req.params.forClaim,
+    { strengthOfClaim: req.params.claimStrength,
+      isForClaim: req.params.forClaim,
+      method: req.params.method,
+      evidence: req.params.evidence,
+      analystClaims: req.params.claim,
     },
     { new: true } // Return the updated object
   ) 

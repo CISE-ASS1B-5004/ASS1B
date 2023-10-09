@@ -3,6 +3,10 @@ import axios from "axios"; // Import axios for making HTTP requests
 import styles from './evidence.module.css'
 import { useUserRole } from "../../components/UserContext";
 import React, { useState, useEffect } from "react";
+import { useRouter } from 'next/router'; 
+import { useForm } from "react-hook-form";
+// import formStyles from "../styles/Form.module.scss";
+
 
 interface ArticlesInterface {
     _id: string;
@@ -13,23 +17,69 @@ interface ArticlesInterface {
     volume: string;
     pages: string;
     doi: string;
-    claims: string;
+    subClaims: string;
     method: string;
+    strengthOfClaims: string;
+    isForClaim: string;
+    analystClaims: string;
+    evidence: string;
   }
 
-const evidence = () => {
-    const [articles, setArticles] = useState<ArticlesInterface[]>([]);
-    const [article, setArticle] = useState(null);
+const Evidence = () => {
+    const [Articles, SetArticles] = useState<ArticlesInterface[]>([]);
+    const [article, setArticle] = useState<ArticlesInterface | null>(null);
     const [articleId, setArticleId] = useState<string | null>(null);
     const [userRole, setUserRole] = useUserRole(); // Get the user role using the hook
     const [claimStrength, setClaimStrength] = useState("Weak");
     const [forClaim, setForClaim] = useState("For");
-    const [title, setTitle] = useState("");
+    const [Title, setTitle] = useState("");
+    const [method, setMethod] = useState("");
+    const [evidence, setEvidence] = useState("");
+    const [claim, setClaim] = useState("");
+
+  
+    const { register, handleSubmit, reset } = useForm();
+
+    const onSubmit = async (data: any) => {
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/api/analyst/${articleId}/${claimStrength}/${forClaim}/${method}/${evidence}/${claim}`;
+      
+      console.log(`Claim: ${claim} for ${articleId}`);
+      console.log(`claim strenght: ${claimStrength} for ${articleId}`);
+      console.log(`For/Against: ${forClaim} for ${articleId}`);
+      console.log(`Method: ${method} for ${articleId}`);
+      console.log(`Evidence: ${evidence} for ${articleId}`);
+
+      try {
+       axios
+        .put(url, {}, {
+              headers: { 'user-role': userRole } // send user role in headers)
+       })
+    //     await axios.post(url, data, {
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //     });
+  
+    //     console.log("URL:", url);
+    //     console.log("Data:", data);
+    //     console.log("Headers:", {
+    //       "Content-Type": "application/json",
+    //     });
+    //     // setIsSubmitted(true);
+        console.log("Updated successfully!");
+
+        // handleApprove();
+        
+        reset(); // Reset the form fields
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
 
     //get all articles from analyst queue
     useEffect(() => {
         axios
-          .get("http://localhost:8082/api/analyst", {
+          .get(`${process.env.NEXT_PUBLIC_API_URL}/api/analyst/`, {
             headers: { 'user-role': userRole } // send user role in headers
           })
           .then((response) => {
@@ -37,28 +87,67 @@ const evidence = () => {
               ...article,
               id: article._id // Ensure the correct id is set here
             }));
-            setArticles(fetchedArticles);
+            SetArticles(fetchedArticles);
           })
           .catch((error) => {
             console.error("Error fetching articles:", error);
           });
       }, [userRole]);
 
-    //map all the titles into the dropdown
+    const handleApprove = () => {
+      console.log(`Claim: ${claim} for ${articleId}`);
+      console.log(`claim strenght: ${claimStrength} for ${articleId}`);
+      console.log(`For/Against: ${forClaim} for ${articleId}`);
+      console.log(`Method: ${method} for ${articleId}`);
+      console.log(`Evidence: ${evidence} for ${articleId}`);
+  
+      axios
+        .put(`${process.env.NEXT_PUBLIC_API_URL}/api/analyst/approve/${articleId}`, {}, {
+          headers: { 'user-role': userRole } // send user role in headers
+        })
+        .then(() => {
+          SetArticles(Articles.filter(article => article._id !== articleId));
+  
+        console.log(`ID: ${articleId} Approved!`);
+        
 
-    //once title clicked load all the data
+        })
+        .catch((error) => console.error("Error approving article:", error));
+    };
 
-    //once approved set the data input and remove from queue
+    // function updateArticle(){
+    //   axios
+    //     .put(`${process.env.NEXT_PUBLIC_API_URL}/api/analyst/update/${articleId}/${claimStrength}/${forClaim}/${method}/${evidence}/${claim}`, {}, {
+    //       headers: { 'user-role': userRole } // send user role in headers
+    //     })
+    //     .then(() => {
+    //       setArticles(articles.filter(article => article._id !== articleId));
+    //       console.log('Approved!');
+    //     })
+    //     .catch((error) => console.error("Error approving article:", error));
+  
+    // }
+  
+    const handleReject = () => {
+      axios
+        .put(`${process.env.NEXT_PUBLIC_API_URL}/api/analyst/reject/${articleId}`, {}, {
+          headers: { 'user-role': userRole } // send user role in headers
+        })
+        .then(() => {
+          console.log('Rejected!');
+          SetArticles(Articles.filter(article => article._id !== articleId));
+          reset();
+        })
+        .catch((error) => console.error("Error rejecting article:", error));
+    };
 
     const handleArticle = (e: React.ChangeEvent<HTMLSelectElement>) => {
        //get id of selected title
         setArticleId(e.target.value);
-        
-        //pull single article
-
-        //display as info
+        // setTitle(e.target.title);
+        console.log(`id: ${articleId} `);
     };
- 
+     
     useEffect(() => {
       if (articleId) {
         // Make an API request to fetch the article data
@@ -69,24 +158,40 @@ const evidence = () => {
             setArticle(response.data);
           })
           .catch((error) => {
-            console.error("Error fetching article data:", error);
-            // Handle errors, e.g., show an error message to the user
-          });
-      }
-    }, [articleId]);
-  
-    
+              console.error("Error fetching articles:", error);
+            });
+            }
+          }, [articleId]);
+
+  const router = useRouter();
 
 
+  const handleNavigateToArchive = () => {
+    router.push('/analyst/archive'); // Navigate to the archive page
+  };
+        
+   
 
     return (
         <div className={styles.container}>
-            <div className={styles.left}>
-                <h1>Analysis of text</h1>
+          {userRole !== "Analyst" ? (
+        <div style={{ color: "red", textAlign: "center", marginTop: "20px" }}>
+          <h1>403 Access Denied</h1>
+          <p>You do not have permission to view this page.</p>
+        </div>
+      ) : (<>
+            <div className="Header">
+              <button onClick={handleNavigateToArchive} style={{ display: 'block', marginBottom: '20px' }}>
+                Go to Archive
+              </button>
+              <h1>Analysis of text</h1>
+            </div>
+            <form  onSubmit={handleSubmit(onSubmit)} className={styles.analystForm}>
+              <div className={styles.left}>
                 <div className={styles.queue}>
-                    <select value={title} onChange={(event) => handleArticle(event)}>
+                    <select className={styles.menu} value={Title} onChange={(event) => handleArticle(event)}>
                         <option value="">Select an Article</option>
-                        {articles.map((article) => (
+                        {Articles.map((article) => (
                         <option key={article._id} value={article._id}>
                             {article.title}
                         </option>
@@ -94,30 +199,44 @@ const evidence = () => {
                     </select>
                 </div>
             
-                <div className="info">
-                    <h3>Title: </h3>
-                    <p>Authors: </p>
-                    <p>Journal Name: </p>
-                    <p>Publication Year: </p>
-                    <p>Volume: </p>
-                    <p>Page: </p>
-                    <p>DOI: </p>
+                {article ? (
+                  <div className="info">
+                  <h3>Title: {article.title}</h3>
+                  <p>Authors:{article.authors} </p>
+                  <p>Journal Name: {article.journalName}</p>
+                  <p>Publication Year: {article.pubYear}</p>
+                  <p>Volume: {article.volume}</p>
+                  <p>Pages: {article.pages}</p>
+                  <p>DOI: {article.doi} </p>
+                  <p>Submission Claim: {article.subClaims} </p>
+                  <p>Submission Method: {article.method} </p>
+                  </div>
+                ) : (
+                  <p>Loading...</p>
+                )}
 
-                </div>
-            </div>
+                
+               </div>
         
-            <div className={styles.analystEvidence}>
-                <form className="evidence">
+              <div className={styles.analystEvidence}>
+                <div className="evidence">
                     <div className="section">
                         <label htmlFor="claim">Claim:</label>
-                        <input type="text" placeholder="Claim" id="claim"></input>
+                        <input type="text" placeholder="Claim" id="claim" 
+                            onChange={(event) => { setClaim(event.target.value);}}
+
+                        //  {...register(`${article}.analystClaims`)}
+                          required />
                     </div>
 
                          {/* Dropdown menus */}
                     <div className="dropdownMenus">
                         <div className="strenghtDropdown">
                             <label>Strength Of Claim</label>
-                            <select value={claimStrength} onChange={(event) => { setClaimStrength(event.target.value);}}>
+                            <select value={"claimStrength"} 
+                            onChange={(event) => { setClaimStrength(event.target.value);
+                              console.log(event.target.value);}} 
+                            required>
                                 <option value="Weak">Weak</option>
                                 <option value="Average">Average</option>
                                 <option value="Strong">Strong</option>
@@ -125,22 +244,47 @@ const evidence = () => {
                         </div>
                         <div className="to/forClaim">
                             <label>For/Against claim</label>
-                            <select  value={forClaim} onChange={(event) => { setForClaim(event.target.value);}}>
+                            <select  value={forClaim} 
+                            onChange={(event) => { setForClaim(event.target.value);
+                              console.log(event.target.value);}} 
+                            required>
                                 <option value="For">For</option>
                                 <option value="Against">Against</option>
                             </select>
                         </div>
                     </div>
                 
-                    <div className="section">
+                    <div className="method">
                         <label htmlFor="method">Method:</label>
-                        <input type="text" placeholder="Method" id="Method"></input>
+                        <input
+                        // className={formStyles.input}
+                        onChange={(event) => { setMethod(event.target.value);
+                        console.log(event.target.value);
+                      }} 
+                        type="text"
+                        id="method"
+                        placeholder="Method"
+                        required
+                      />
                     </div>
+                    <div className="evidence">
+                    <label htmlFor="evidence">Evidence:</label>
+                        <input className={styles.evidenceInput} type="text" placeholder="Evidence" id="evidence"
+                         onChange={(event) => { setEvidence(event.target.value);
+                          console.log(event.target.value);}} required></input>
+                    </div>
+                    <div className="Buttons">
+                        <button type="submit">Approve</button>
+                        <button onClick={() => handleReject()}>Reject</button>
+                    </div>
+                    </div>
+                  </div>
                 </form>
-            </div>
+              </>
+            )}
         </div>
      
       );
 }
 
-export default evidence;
+export default Evidence;
