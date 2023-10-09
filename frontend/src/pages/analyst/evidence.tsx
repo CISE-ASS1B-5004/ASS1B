@@ -94,13 +94,9 @@ const Evidence = () => {
           });
       }, [userRole]);
 
+      //Called after successful update
     const handleApprove = () => {
-      console.log(`Claim: ${claim} for ${articleId}`);
-      console.log(`claim strenght: ${claimStrength} for ${articleId}`);
-      console.log(`For/Against: ${forClaim} for ${articleId}`);
-      console.log(`Method: ${method} for ${articleId}`);
-      console.log(`Evidence: ${evidence} for ${articleId}`);
-  
+   
       axios
         .put(`${process.env.NEXT_PUBLIC_API_URL}/api/analyst/approve/${articleId}`, {}, {
           headers: { 'user-role': userRole } // send user role in headers
@@ -114,19 +110,6 @@ const Evidence = () => {
         })
         .catch((error) => console.error("Error approving article:", error));
     };
-
-    // function updateArticle(){
-    //   axios
-    //     .put(`${process.env.NEXT_PUBLIC_API_URL}/api/analyst/update/${articleId}/${claimStrength}/${forClaim}/${method}/${evidence}/${claim}`, {}, {
-    //       headers: { 'user-role': userRole } // send user role in headers
-    //     })
-    //     .then(() => {
-    //       setArticles(articles.filter(article => article._id !== articleId));
-    //       console.log('Approved!');
-    //     })
-    //     .catch((error) => console.error("Error approving article:", error));
-  
-    // }
   
     const handleReject = () => {
       axios
