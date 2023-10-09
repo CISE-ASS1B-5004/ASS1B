@@ -8,9 +8,9 @@ export default function Home() {
       <h2>About SPEED</h2>
       <p>
         SPEED, short for Software Practice Empirical Evidence Database, is a
-        collaborative platform created as part of CISE Group 5004's Assignment
-        1B. Our primary goal is to provide a centralized repository for
-        empirical evidence related to software development practices.
+        collaborative platform created as part of CISE Group 5004&apos;s
+        Assignment 1B. Our primary goal is to provide a centralized repository
+        for empirical evidence related to software development practices.
       </p>
 
       <h2>What We Offer</h2>
