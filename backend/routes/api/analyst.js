@@ -64,7 +64,7 @@ router.put("/approve/:id", (req, res) => {
     { new: true } // Return the updated object
   )
   .then((article) => {
-    console.log("Approved");
+    console.log(`ID: ${req.params.id} Approved`);
     res.json({ msg: "Updated successfully" });
   })
   .catch((err) => {

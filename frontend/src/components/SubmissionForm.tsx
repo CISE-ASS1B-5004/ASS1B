@@ -8,7 +8,7 @@ export default function SubmissionForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const onSubmit = async (data: any) => {
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/articles`;
+    const url = `http://localhost:8082/api/articles`;
 
     try {
       const realAuthors = data.authors.split(",");
@@ -133,12 +133,12 @@ export default function SubmissionForm() {
           />
         </div>
         <div>
-          <label htmlFor="claims">Claims:</label>
+          <label htmlFor="subClaims">Claims:</label>
           <input
             className={formStyles.input}
-            {...register("claims")}
+            {...register("subClaims")}
             type="text"
-            id="claims"
+            id="subClaims"
             placeholder="Claims"
             required
           />

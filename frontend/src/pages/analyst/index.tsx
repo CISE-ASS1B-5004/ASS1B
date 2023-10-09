@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import tableStyles from "../../components/table/SortableTable.module.scss";
 
 
+
 interface ArticlesInterface {
   _id: string;
   title: string;
@@ -59,6 +60,11 @@ const Articles: React.FC = () => {
     router.push('/analyst/archive'); // Navigate to the archive page
   };
 
+  const handleNavigateToEvidence = (id: string) => {
+    setArticleId(id);
+    router.push(`/analyst/evidence`); // Navigate to the archive page
+  };
+
   function updateArticle(id: string){
     axios
       .put(`http://localhost:8082/api/analyst/update/${id}/${claimStrength}/${forClaim}`, {}, {
@@ -79,12 +85,13 @@ const Articles: React.FC = () => {
     updateArticle(id);
 
     axios
-      .put(`http://localhost:8082/api/moderator/approve/${id}`, {}, {
+      .put(`http://localhost:8082/api/analyst/approve/${id}`, {}, {
         headers: { 'user-role': userRole } // send user role in headers
       })
       .then(() => {
         setArticles(articles.filter(article => article._id !== id));
-        console.log('Approved!');
+
+        console.log(`ID: ${id} Approved!`);
       })
       .catch((error) => console.error("Error approving article:", error));
   };
@@ -148,28 +155,12 @@ const Articles: React.FC = () => {
                     <td>{article.claims}</td>
                     <td>{article.method}</td>
                     <td>
-                    {/* Dropdown menus */}
-                    <div className="dropdownMenus">
-                    <div className="strenghtDropdown">
-                      <label>Strength Of Claim</label>
-                    <select value={claimStrength} onChange={(event) => { setClaimStrength(event.target.value);}}>
-                      <option value="Weak">Weak</option>
-                      <option value="Average">Average</option>
-                      <option value="Strong">Strong</option>
-                    </select>
-                    </div>
-                    <div className="to/forClaim">
-                      <label>For/Against claim</label>
-                    <select  value={forClaim} onChange={(event) => { setForClaim(event.target.value);}}>
-                      <option value="For">For</option>
-                      <option value="Against">Against</option>
-                    </select>
-                    </div>
-                    </div>
+               
                     </td>
                     <td>
                     <button onClick={() => handleApprove(article._id)}>Approve</button>
                     <button onClick={() => handleReject(article._id)}>Reject</button>
+                    <button onClick={() => handleNavigateToEvidence(article._id)}> Add Evidence</button>
                     </td>
                     </tr>
                 ))}

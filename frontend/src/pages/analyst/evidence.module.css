@@ -1,0 +1,12 @@
+.left {
+    border: 2px solid red;
+}
+
+.analystEvidence {
+    border: 2px solid green;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+}
