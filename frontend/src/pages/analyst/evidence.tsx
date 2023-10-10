@@ -40,36 +40,38 @@ const Evidence = () => {
 
     const onSubmit = async (data: any) => {
       const url = `${process.env.NEXT_PUBLIC_API_URL}/api/analyst/update/${articleId}`;
-      const url2 = `https://localhost:8082/api/analyst/update/${articleId}`;
 
-      
+      console.log(articleId,);
       console.log("URL:", url);
       console.log("Data:", data);
       console.log("Headers:", {
         "Content-Type": "application/json",
       });
 
-      try {
-        await axios.put(url, data, {
-          headers: {
+      if(articleId){
+        try {
+          await axios.put(url, data, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+    
+          console.log("URL:", url);
+          console.log("Data:", data);
+          console.log("Headers:", {
             "Content-Type": "application/json",
-          },
-        });
+          });
+      //     // setIsSubmitted(true);
+          console.log("Updated successfully!");
   
-        console.log("URL:", url);
-        console.log("Data:", data);
-        console.log("Headers:", {
-          "Content-Type": "application/json",
-        });
-    //     // setIsSubmitted(true);
-        console.log("Updated successfully!");
-
-        // handleApprove();
-        
-        reset(); // Reset the form fields
-      } catch (error) {
-        console.error("Error:", error);
+          // handleApprove();
+          
+          reset(); // Reset the form fields
+        } catch (error) {
+          console.error("Error:", error);
+        }
       }
+      
     };
 
     //get all articles from analyst queue
