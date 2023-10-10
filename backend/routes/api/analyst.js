@@ -117,6 +117,30 @@ router.get("/archive", (req, res) => {
   );
 });
 
+//update
+// @route GET api/analyst/update/:id
+// @description Update article
+// @access Public
+router.put("update/:id", (req, res) => {
+
+  Article.findByIdAndUpdate(req.params.id, {
+    analystClaims: req.body.analystClaims,
+    claimStrength: req.body.claimStrength,
+    evidence: req.body.evidence,
+    isForClaim: req.body.isForClaim,
+    method: req.body.method,
+  })
+    .then((article) => {
+      if (!article) {
+        return res.status(404).json({ error: "Article not found" });
+      }
+      return res.json({ msg: "Updated successfully" })
+    })
+    .catch((err) =>
+      res.status(400).json({ error: "Unable to update the Database" })
+    );
+});
+
 // @route GET api/analyst/:id/:claimStrength/:forClaim/:method/:evidence/:claim
 // @description Update article
 // @access Analyst
@@ -142,5 +166,7 @@ router.put("/:id/:claimStrength/:forClaim/:method/:evidence/:claim", (req, res) 
     res.status(400).json({ error: "Unable to update the Database" })
   );
 });
+
+
 
 module.exports = router;

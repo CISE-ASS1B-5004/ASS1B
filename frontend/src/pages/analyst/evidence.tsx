@@ -33,38 +33,34 @@ const Evidence = () => {
     const [claimStrength, setClaimStrength] = useState("Weak");
     const [forClaim, setForClaim] = useState("For");
     const [Title, setTitle] = useState("");
-    const [method, setMethod] = useState("");
-    const [evidence, setEvidence] = useState("");
-    const [claim, setClaim] = useState("");
+
 
   
     const { register, handleSubmit, reset } = useForm();
 
     const onSubmit = async (data: any) => {
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/api/analyst/${articleId}/${claimStrength}/${forClaim}/${method}/${evidence}/${claim}`;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/api/analyst/update/${articleId}`;
+      const url2 = `https://localhost:8082/api/analyst/update/${articleId}`;
+
       
-      console.log(`Claim: ${claim} for ${articleId}`);
-      console.log(`claim strenght: ${claimStrength} for ${articleId}`);
-      console.log(`For/Against: ${forClaim} for ${articleId}`);
-      console.log(`Method: ${method} for ${articleId}`);
-      console.log(`Evidence: ${evidence} for ${articleId}`);
+      console.log("URL:", url);
+      console.log("Data:", data);
+      console.log("Headers:", {
+        "Content-Type": "application/json",
+      });
 
       try {
-       axios
-        .put(url, {}, {
-              headers: { 'user-role': userRole } // send user role in headers)
-       })
-    //     await axios.post(url, data, {
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //     });
+        await axios.put(url, data, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
   
-    //     console.log("URL:", url);
-    //     console.log("Data:", data);
-    //     console.log("Headers:", {
-    //       "Content-Type": "application/json",
-    //     });
+        console.log("URL:", url);
+        console.log("Data:", data);
+        console.log("Headers:", {
+          "Content-Type": "application/json",
+        });
     //     // setIsSubmitted(true);
         console.log("Updated successfully!");
 
@@ -135,7 +131,7 @@ const Evidence = () => {
       if (articleId) {
         // Make an API request to fetch the article data
         axios
-          .get(`http://localhost:8082/api/articles/${articleId}`)
+          .get(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${articleId}`)
           .then((response) => {
             // Set the fetched article data in the state
             setArticle(response.data);
@@ -206,9 +202,9 @@ const Evidence = () => {
                     <div className="section">
                         <label htmlFor="claim">Claim:</label>
                         <input type="text" placeholder="Claim" id="claim" 
-                            onChange={(event) => { setClaim(event.target.value);}}
+                            // onChange={(event) => { setClaim(event.target.value);}}
 
-                        //  {...register(`${article}.analystClaims`)}
+                         {...register(`analystClaims`)}
                           required />
                     </div>
 
@@ -217,8 +213,10 @@ const Evidence = () => {
                         <div className="strenghtDropdown">
                             <label>Strength Of Claim</label>
                             <select value={"claimStrength"} 
-                            onChange={(event) => { setClaimStrength(event.target.value);
-                              console.log(event.target.value);}} 
+                            // onChange={(event) => { setClaimStrength(event.target.value);
+                            //   console.log(event.target.value);}} 
+                        {...register("claimStrength")}
+
                             required>
                                 <option value="Weak">Weak</option>
                                 <option value="Average">Average</option>
@@ -228,8 +226,10 @@ const Evidence = () => {
                         <div className="to/forClaim">
                             <label>For/Against claim</label>
                             <select  value={forClaim} 
-                            onChange={(event) => { setForClaim(event.target.value);
-                              console.log(event.target.value);}} 
+                            // onChange={(event) => { setForClaim(event.target.value);
+                            //   console.log(event.target.value);}} 
+                          {...register(`isForClaim`)}
+
                             required>
                                 <option value="For">For</option>
                                 <option value="Against">Against</option>
@@ -241,9 +241,8 @@ const Evidence = () => {
                         <label htmlFor="method">Method:</label>
                         <input
                         // className={formStyles.input}
-                        onChange={(event) => { setMethod(event.target.value);
-                        console.log(event.target.value);
-                      }} 
+                        {...register(`method`)}
+
                         type="text"
                         id="method"
                         placeholder="Method"
@@ -253,12 +252,16 @@ const Evidence = () => {
                     <div className="evidence">
                     <label htmlFor="evidence">Evidence:</label>
                         <input className={styles.evidenceInput} type="text" placeholder="Evidence" id="evidence"
-                         onChange={(event) => { setEvidence(event.target.value);
-                          console.log(event.target.value);}} required></input>
+                        //  onChange={(event) => { setEvidence(event.target.value);
+                        //   console.log(event.target.value);}} 
+                        {...register("evidence")}
+
+                          required></input>
                     </div>
                     <div className="Buttons">
                         <button type="submit">Approve</button>
-                        <button onClick={() => handleReject()}>Reject</button>
+                        <button onClick={() => handleReject()}
+                        >Reject</button>
                     </div>
                     </div>
                   </div>
