@@ -1,64 +1,66 @@
-.form {
-    display: flex;
-    flex-direction: column;
-    max-width: 100vw;
-    justify-content: center;
-    align-items: center;
-    font-family: 'Roboto', sans-serif;
-  }
-  
-  .formItem {
-    padding: 1em;
-    margin: 1em 0;
-    flex-grow: 1;
-  }
-  
-  .formTextArea {
-    @extend .formItem;
-    min-height: 8em;
-  }
-  
-  .arrayItem {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: stretch;
-  }
-  
-  .buttonItem {
-    width: 3rem;
-    height: 3rem;
-    flex-grow: 0;
-    font-size: 1.5em;
-    color: #FFF;
-    background-color: #333;
-    font-size: 18px;
-    text-align: center;
-    font-style: normal;
-    border-radius: 5px;
-    width: 100%;
-    border-width: 1px 1px 3px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-    margin-bottom: 10px;
-
-    &:hover {
-      color: #ed2e8a;
-      transform: scale(1.15);  // Slightly enlarges the item
-    }
-  }
-
-
-
-.input {
-  background: rgba(255,255,255,0.1);
-  border: none;
-  font-size: 16px;
-  height: auto;
-  padding: 15px;
-  width: 100%;
-  background-color: #eeeef0;
-  box-shadow: 0 1px 0 rgba(0,0,0,0.03) inset;
-  margin-bottom: 30px;
+.content {
+  display: grid;
+  justify-content: center;
 }
 
-  
+.form {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  max-width: 75vw;
+  font-family: 'Roboto', sans-serif;
+}
+
+.formItem {
+  display: grid;
+  padding: 12px;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.formTextArea {
+  @extend .formItem;
+  min-height: 8em;
+}
+
+.formSection {}
+
+.arrayItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: stretch;
+}
+
+.buttonItem {
+  // width: 3rem;
+  height: 3rem;
+  // flex-grow: 0;
+  font-size: 1.5em;
+  color: #FFF;
+  background-color: #333;
+  font-size: 18px;
+  border-radius: 16px;
+  width: 50%;
+  border-width: 1px 1px 3px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  margin-bottom: 10px;
+  padding: 16px;
+  transition: 0.2s;
+
+  &:hover {
+    color: #ed2e8a;
+    transform: scale(1.05); // Slightly enlarges the item
+  }
+}
+
+.input {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  font-size: 16px;
+  height: 16px;
+  padding: 16px;
+  width: 100%;
+  background-color: #eeeef0;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
+}

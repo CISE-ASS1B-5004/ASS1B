@@ -14,6 +14,22 @@ const PopulatedNavBar = () => {
     router.push("/"); // Redirect to home page or wherever you want after logout
   };
 
+  const handleRoleClick = () => {
+    switch (userRole) {
+      case "Admin":
+        router.push("/admin");
+        break;
+      case "Analyst":
+        router.push("/analyst");
+        break;
+      case "Moderator":
+        router.push("/moderator");
+        break;
+      default:
+        break;
+    }
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.title}>SPEED</div>{" "}
@@ -22,22 +38,17 @@ const PopulatedNavBar = () => {
         <NavBar>
           <div className={styles.leftNav}>
             <NavItem route="/">Home</NavItem>
-            <NavItem route="/articles">View Articles</NavItem>
             <NavItem route="/articles/new">Submit New</NavItem>
             <NavItem route="/articles/search">Search</NavItem>
-            {userRole==="Moderator" ? (
-            <NavItem route="/moderator">Moderator Page</NavItem>
-            ) : ("") }
-            {userRole==="Analyst" ? (
-            <NavItem route="/analyst">Analyst Page</NavItem>
-            ) : ("") }
-
+            
           </div>
           <div className={styles.user}>
             {" "}
             {userRole ? (
               <>
-                <div className={styles.role}>{userRole}</div>
+                <div className={styles.role} onClick={handleRoleClick}>
+                  {userRole} Page
+                </div>
                 <button onClick={handleLogout} className={styles.logoutButton}>
                   Logout
                 </button>

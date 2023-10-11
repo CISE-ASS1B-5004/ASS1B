@@ -35,6 +35,13 @@
   .role {
     color: rgb(46, 255, 217); // Or whatever color you want
     // other styles for displaying the role...
+    transition: all 0.3s ease;  // Transition applies to all properties
+  
+    // Cool hover effect
+    &:hover {
+      color: #ed2e8a;
+      transform: scale(1.15);  // Slightly enlarges the item
+    }
   }
 
   .user{

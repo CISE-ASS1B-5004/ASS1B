@@ -20,7 +20,10 @@ const moderator = require("./routes/api/moderator");
 const analyst = require("./routes/api/analyst");
 
 
+const admin = require("./routes/api/admin");
 const app = express();
+
+
 
 // Connect Database
 connectDB()
@@ -47,7 +50,7 @@ app.get("/", (req, res) =>
 app.use("/api/articles", books);
 app.use("/api/moderator", moderator);
 app.use("/api/analyst", analyst);
-
+app.use("/api/admin", admin);
 
 if (process.env.NODE_ENV !== 'production') {
   const port = process.env.PORT || 8082;
