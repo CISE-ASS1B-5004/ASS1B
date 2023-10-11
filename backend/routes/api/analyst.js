@@ -14,9 +14,9 @@ router.get("/test", (req, res) => res.send("analyst route testing!"));
 // @access Analyst only
 router.get("/", (req, res) => {
   const userRole = req.get('user-role');
-  if (userRole !== 'Analyst') {
-    return res.status(403).json({ error: "Access Denied: You are not an Analyst!" });
-  }
+  // if (userRole !== 'Analyst') {
+  //   return res.status(403).json({ error: "Access Denied: You are not an Analyst!" });
+  // }
 
   Article.find({ isApprovedByModerator: true, isApprovedByAnalyst: false,  isRejectedByAnalyst: false,})
     .then((articles) => {
@@ -33,11 +33,11 @@ router.get("/", (req, res) => {
 // @route GET api/analyst/evidence/id
 // @description Get article in the analysis queue with specific id
 // @access Analyst only
-router.get("/evidence/:id", (req, res) => {
+router.get("/:id", (req, res) => {
   const userRole = req.get('user-role');
-  if (userRole !== 'Analyst') {
-    return res.status(403).json({ error: "Access Denied: You are not an Analyst!" });
-  }
+  // if (userRole !== 'Analyst') {
+  //   return res.status(403).json({ error: "Access Denied: You are not an Analyst!" });
+  // }
 
   Article.findById(req.params.id)
     .then((article) => {
