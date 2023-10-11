@@ -42,7 +42,7 @@ const ArticleSchema = new mongoose.Schema({
     default: "",
   },
   isForClaim: {
-    type: Boolean,
+    type: String,
     default: false,
   },
   strengthOfClaim: {

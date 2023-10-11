@@ -29,7 +29,7 @@ const PopulatedNavBar = () => {
             <NavItem route="/moderator">Moderator Page</NavItem>
             ) : ("") }
             {userRole==="Analyst" ? (
-            <NavItem route="/analyst/evidence">Analyst Page</NavItem>
+            <NavItem route="/analyst">Analyst Page</NavItem>
             ) : ("") }
 
           </div>

@@ -1,16 +1,12 @@
-import { GetStaticProps, NextPage } from "next";
-import SortableTable from "../../components/table/SortableTable";
-import { useEffect, useState } from "react";
-import * as React from 'react';
-import axios from "axios";
+import axios from "axios"; // Import axios for making HTTP requests
+import styles from "./evidence.module.css";
 import { useUserRole } from "../../components/UserContext";
-import { useRouter } from 'next/router'; 
-import tableStyles from "../../components/table/SortableTable.module.scss";
-
-
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+// import formStyles from "../styles/Form.module.scss";
 
 interface ArticlesInterface {
-  _id: string;
   title: string;
   authors: string[];
   journalName: string;
@@ -18,159 +14,322 @@ interface ArticlesInterface {
   volume: string;
   pages: string;
   doi: string;
-  claims: string;
   method: string;
+  subClaims: string;
+  analystClaims: string;
+  isForClaim: string;
+  strengthOfClaim: string;
+  evidence: string;
+  _id: string;
 }
 
-const Articles: React.FC = () => {
-  const [articles, setArticles] = useState<ArticlesInterface[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+const Evidence = () => {
+  const [Articles, SetArticles] = useState<ArticlesInterface[]>([]);
+  const [article, setArticle] = useState<ArticlesInterface | null>(null);
+  const [articleId, setArticleId] = useState<string | null>(null);
   const [userRole, setUserRole] = useUserRole(); // Get the user role using the hook
-  const [articleId, setArticleId] = useState(String);
   const [claimStrength, setClaimStrength] = useState("Weak");
   const [forClaim, setForClaim] = useState("For");
+  const [title, setTitle] = useState("");
+  const [method, setMethod] = useState("");
+  const [evidence, setEvidence] = useState("");
+  const [analystClaim, setAnalystClaim] = useState("");
 
+  if (article) {
+    article.analystClaims = analystClaim;
+    article.strengthOfClaim = claimStrength;
+    article.method = method;
+    article.evidence = evidence;
+    article.isForClaim = forClaim;
+  }
 
+  const { register, handleSubmit, reset } = useForm();
+
+  const onSubmit = async () => {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/analyst/${articleId}`;
+
+    console.log(articleId);
+    console.log("URL:", url);
+    // console.log("Data:", data);
+    console.log("Updating");
+
+    if (articleId) {
+      try {
+        console.log("Sending request...");
+        console.log(article);
+        await axios
+          .put(url, article, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((response) => {
+            // Handle the successful response
+            console.log("Data:", response.data);
+          })
+          .catch((error) => {
+            // Handle errors
+            console.error("Error:", error);
+
+            // You can access the response status and data here:
+            if (error.response) {
+              console.error("Response Status:", error.response.status);
+              console.error("Response Data:", error.response.data);
+            }
+          });
+
+        console.log("URL:", url);
+        console.log("Data:", article);
+        console.log("Headers:", {
+          "Content-Type": "application/json",
+        });
+        // setIsSubmitted(true);
+        console.log("Updated successfully!");
+
+        // handleApprove();
+
+        reset(); // Reset the form fields
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+  };
+
+  //get all articles from analyst queue
   useEffect(() => {
     axios
-      .get("http://localhost:8082/api/analyst", {
-        headers: { 'user-role': userRole } // send user role in headers
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/api/analyst/`, {
+        headers: { "user-role": userRole }, // send user role in headers
       })
       .then((response) => {
-        const fetchedArticles: ArticlesInterface[] = response.data.map((article: any) => ({
-          ...article,
-          id: article._id // Ensure the correct id is set here
-        }));
-        setArticles(fetchedArticles);
-        setIsLoading(false);
+        const fetchedArticles: ArticlesInterface[] = response.data.map(
+          (article: any) => ({
+            ...article,
+            id: article._id, // Ensure the correct id is set here
+          })
+        );
+        SetArticles(fetchedArticles);
+        setArticleId(fetchedArticles[0]._id);
+        setTitle(fetchedArticles[0].title);
       })
       .catch((error) => {
         console.error("Error fetching articles:", error);
-        setIsLoading(false);
       });
-  }, [userRole]); // Add userRole as a dependency, so if it changes, this effect runs again.
+  }, [userRole]);
+
+  //Called after successful update
+  const handleApprove = () => {
+    axios
+      .put(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/analyst/approve/${articleId}`,
+        {},
+        {
+          headers: { "user-role": userRole }, // send user role in headers
+        }
+      )
+      .then(() => {
+        SetArticles(Articles.filter((article) => article._id !== articleId));
+
+        console.log(`ID: ${articleId} Approved!`);
+      })
+      .catch((error) => console.error("Error approving article:", error));
+  };
+
+  const handleReject = () => {
+    axios
+      .put(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/analyst/reject/${articleId}`,
+        {},
+        {
+          headers: { "user-role": userRole }, // send user role in headers
+        }
+      )
+      .then(() => {
+        console.log("Rejected!");
+        SetArticles(Articles.filter((article) => article._id !== articleId));
+        reset();
+      })
+      .catch((error) => console.error("Error rejecting article:", error));
+  };
+
+  const handleArticle = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    //get id of selected title
+    setArticleId(e.target.value);
+    // setTitle(e.target.title);
+    console.log(`id: ${articleId} `);
+  };
 
   useEffect(() => {
-    console.log(`Article id: ${articleId}`);
+    if (articleId) {
+      // Make an API request to fetch the article data
+      axios
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${articleId}`)
+        .then((response) => {
+          // Set the fetched article data in the state
+          setArticle(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching articles:", error);
+        });
+    }
   }, [articleId]);
 
   const router = useRouter();
 
   const handleNavigateToArchive = () => {
-    router.push('/analyst/archive'); // Navigate to the archive page
-  };
-
-  const handleNavigateToEvidence = (id: string) => {
-    setArticleId(id);
-    router.push(`/analyst/evidence`); // Navigate to the archive page
-  };
-
-  function updateArticle(id: string){
-    axios
-      .put(`http://localhost:8082/api/analyst/update/${id}/${claimStrength}/${forClaim}`, {}, {
-        headers: { 'user-role': userRole } // send user role in headers
-      })
-      .then(() => {
-        setArticles(articles.filter(article => article._id !== id));
-        console.log('Approved!');
-      })
-      .catch((error) => console.error("Error approving article:", error));
-
-  }
-
-  const handleApprove = (id: string) => {
-    console.log(`claim strenght: ${claimStrength} for ${id}`);
-    console.log(`For/Against: ${forClaim} for ${id}`);
-
-    updateArticle(id);
-
-    axios
-      .put(`http://localhost:8082/api/analyst/approve/${id}`, {}, {
-        headers: { 'user-role': userRole } // send user role in headers
-      })
-      .then(() => {
-        setArticles(articles.filter(article => article._id !== id));
-
-        console.log(`ID: ${id} Approved!`);
-      })
-      .catch((error) => console.error("Error approving article:", error));
-  };
-
-  const handleReject = (id: string) => {
-    axios
-      .put(`http://localhost:8082/api/analyst/reject/${id}`, {}, {
-        headers: { 'user-role': userRole } // send user role in headers
-      })
-      .then(() => {
-        console.log('Rejected!');
-        setArticles(articles.filter(article => article._id !== id));
-      })
-      .catch((error) => console.error("Error rejecting article:", error));
+    router.push("/analyst/archive"); // Navigate to the archive page
   };
 
   return (
-    <div className="container">
-      {userRole !== 'Analyst' ? (
-        <div style={{ color: 'red', textAlign: 'center', marginTop: '20px' }}>
+    <div className={styles.container}>
+      {userRole !== "Analyst" ? (
+        <div style={{ color: "red", textAlign: "center", marginTop: "20px" }}>
           <h1>403 Access Denied</h1>
           <p>You do not have permission to view this page.</p>
         </div>
       ) : (
         <>
-          <h1>Analyst Index Page</h1>
-          <button onClick={handleNavigateToArchive} style={{ display: 'block', marginBottom: '20px' }}>
-            Go to Archive
-          </button>
-          <p>Page containing a table of articles in analysis queue:</p>
-          {isLoading ? (
-            <div>Loading...</div>
-          ) : articles.length === 0 ? (
-            <div>No Articles found in the analysis queue</div>
-          ) : (
-            <table className={tableStyles.table}>
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Authors</th>
-                  <th>Journal Name</th>
-                  <th>Published Year</th>
-                  <th>Volume</th>
-                  <th>Pages</th>
-                  <th>DOI</th>
-                  <th>Claims</th>
-                  <th>Method</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {articles.map((article) => (
-                  <tr key={article._id}>
-                    <td>{article.title}</td>
-                    <td>{article.authors.join(', ')}</td>
-                    <td>{article.journalName}</td>
-                    <td>{article.pubYear}</td>
-                    <td>{article.volume}</td>
-                    <td>{article.pages}</td>
-                    <td>{article.doi}</td>
-                    <td>{article.claims}</td>
-                    <td>{article.method}</td>
-                    <td>
-               
-                    </td>
-                    <td>
-                    <button onClick={() => handleApprove(article._id)}>Approve</button>
-                    <button onClick={() => handleReject(article._id)}>Reject</button>
-                    <button onClick={() => handleNavigateToEvidence(article._id)}> Add Evidence</button>
-                    </td>
-                    </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+          <div className="Header">
+            <button
+              onClick={handleNavigateToArchive}
+              style={{ display: "block", marginBottom: "20px" }}
+            >
+              Go to Archive
+            </button>
+            <h1>Analysis of text</h1>
+          </div>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className={styles.analystForm}
+          >
+            <div className={styles.left}>
+              <div className={styles.queue}>
+                <select
+                  className={styles.menu}
+                  value={title}
+                  onChange={(event) => handleArticle(event)}
+                >
+                  <option value={title}>Select an Article</option>
+                  {Articles.map((article) => (
+                    <option key={article._id} value={article._id}>
+                      {article.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {article ? (
+                <div className="info">
+                  <h3>Title: {article.title}</h3>
+                  <p>Authors:{article.authors} </p>
+                  <p>Journal Name: {article.journalName}</p>
+                  <p>Publication Year: {article.pubYear}</p>
+                  <p>Volume: {article.volume}</p>
+                  <p>Pages: {article.pages}</p>
+                  <p>DOI: {article.doi} </p>
+                  <p>Submission Claim: {article.subClaims} </p>
+                  <p>Submission Method: {article.method} </p>
+                </div>
+              ) : (
+                <p>Loading...</p>
+              )}
+            </div>
+
+            <div className={styles.analystEvidence}>
+              <div className="evidence">
+                <div className="section">
+                  <label htmlFor="claim">Claim:</label>
+                  <input
+                    type="text"
+                    placeholder="Claim"
+                    id="claim"
+                    onChange={(event) => {
+                      setAnalystClaim(event.target.value);
+                    }}
+                    //  {...register(`analystClaims`)}
+                    required
+                  />
+                </div>
+
+                {/* Dropdown menus */}
+                <div className="dropdownMenus">
+                  <div className="strenghtDropdown">
+                    <label>Strength Of Claim</label>
+                    <select
+                      value={claimStrength}
+                      onChange={(event) => {
+                        setClaimStrength(event.target.value);
+                      }}
+                      //   console.log(event.target.value);}}
+                      // {...register("claimStrength")}
+
+                      required
+                    >
+                      <option value="Weak">Weak</option>
+                      <option value="Average">Average</option>
+                      <option value="Strong">Strong</option>
+                    </select>
+                  </div>
+                  <div className="to/forClaim">
+                    <label>For/Against claim</label>
+                    <select
+                      value={forClaim}
+                      onChange={(event) => {
+                        setForClaim(event.target.value);
+                      }}
+                      //   console.log(event.target.value);}}
+                      // {...register(`isForClaim`)}
+
+                      required
+                    >
+                      <option value="For">For</option>
+                      <option value="Against">Against</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="method">
+                  <label htmlFor="method">Method:</label>
+                  <input
+                    // className={formStyles.input}
+                    onChange={(event) => {
+                      setMethod(event.target.value);
+                    }}
+                    // {...register(`method`)}
+
+                    type="text"
+                    id="method"
+                    placeholder="Method"
+                    required
+                  />
+                </div>
+                <div className="evidence">
+                  <label htmlFor="evidence">Evidence:</label>
+                  <input
+                    className={styles.evidenceInput}
+                    type="text"
+                    placeholder="Evidence"
+                    id="evidence"
+                    onChange={(event) => {
+                      setEvidence(event.target.value);
+                    }}
+                    // console.log(event.target.value);}}
+                    // {...register("evidence")}
+
+                    required
+                  ></input>
+                </div>
+                <div className="Buttons">
+                  <button type="submit">Approve</button>
+                  <button onClick={() => handleReject()}>Reject</button>
+                </div>
+              </div>
+            </div>
+          </form>
         </>
       )}
     </div>
   );
 };
 
-export default Articles;
+export default Evidence;

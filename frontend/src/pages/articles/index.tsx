@@ -5,19 +5,18 @@ import axios from "axios";
 
 interface ArticlesInterface {
   title: string;
-  authors: string;
+  authors: string[];
   journalName: string;
   pubYear: string;
   volume: string;
   pages: string;
   doi: string;
-  subClaims: string;
   method: string;
-  strengthOfClaims: string;
-  isForClaim: string;
+  subClaims: string;
   analystClaims: string;
+  isForClaim: string;
+  strengthOfClaim: string;
   evidence: string;
-
 }
 type ArticlesProps = {
   articles: ArticlesInterface[];
@@ -32,13 +31,12 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
     { key: "volume", label: "Volume" },
     { key: "pages", label: "Pages" },
     { key: "doi", label: "DOI" },
-    { key: "subClaims", label: "Submission Claim" },
     { key: "method", label: "Method" },
+    { key: "subClaims", label: "Submission Claim" },
     { key: "analystClaims", label: "Analyst Claim" },
-    { key: "strengthOfClaims", label: "Strength Of CLaim" },
     { key: "isForClaim", label: "For/Against claim" },
+    { key: "strengthOfClaim", label: "Strength Of CLaim" },
     { key: "evidence", label: "evidence" },
-
   ];
 
   const [articles, setArticles] = useState(initialArticles);
@@ -51,23 +49,17 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
       .then((response) => {
         const data = response.data;
         console.log(data);
+
         const fetchedArticles: ArticlesInterface[] = data.map(
-          (article: any) => ({
-            id: article.id ?? article._id,
-            title: article.title,
-            authors: article.authors,
-            journalName: article.journalName,
-            pubYear: article.pubYear,
-            volume: article.volume,
-            pages: article.pages,
-            doi: article.doi,
-            subClaims: article.subClaims,
-            claims: article.claims,
-            strengthOfClaim: article.strengthOfClaim,
-            isForClaim: article.isForClaim,
-            method: article.method,
-            evidence: article.evidence,
-          })
+          (article: any) => {
+            const transformedArticle: any = {};
+
+            headers.forEach((mapping) => {
+              transformedArticle[mapping.key] = article[mapping.key];
+            });
+
+            return transformedArticle;
+          }
         );
         setArticles(fetchedArticles);
         setIsLoading(false); // Data has been fetched
