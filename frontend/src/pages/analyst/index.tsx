@@ -15,8 +15,7 @@ interface ArticlesInterface {
   pages: string;
   doi: string;
   method: string;
-  subClaims: string;
-  analystClaims: string;
+  claims: string;
   isForClaim: string;
   strengthOfClaim: string;
   evidence: string;
@@ -31,23 +30,24 @@ const Evidence = () => {
   const [claimStrength, setClaimStrength] = useState("Weak");
   const [forClaim, setForClaim] = useState("For");
   const [title, setTitle] = useState("");
-  // const [method, setMethod] = useState("");
+  const [method, setMethod] = useState("");
   const [analystMethod, setAnalystMethod] = useState("");
   const [evidence, setEvidence] = useState("");
   const [analystClaim, setAnalystClaim] = useState("");
 
-  if (article) {
-    article.analystClaims = analystClaim;
-    article.strengthOfClaim = claimStrength;
-    article.method = analystMethod;
-    article.evidence = evidence;
-    article.isForClaim = forClaim;
-  }
-
+  
   const { register, handleSubmit, reset } = useForm();
-
+  
   const onSubmit = async () => {
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/analyst/${articleId}`;
+    if (article) {
+      article.claims = analystClaim;
+      article.strengthOfClaim = claimStrength;
+      article.method = analystMethod;
+      article.evidence = evidence;
+      article.isForClaim = forClaim;
+    }
+
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/analyst/approve/${articleId}`;
 
     console.log(articleId);
     console.log("URL:", url);
@@ -169,7 +169,7 @@ const Evidence = () => {
           // Set the fetched article data in the state
           setArticle(response.data);
           console.log(response.data.method);
-          // setMethod(response.data.method);
+          setMethod(response.data.method);
         })
         .catch((error) => {
           console.error("Error fetching articles:", error);
@@ -230,8 +230,8 @@ const Evidence = () => {
                   <p>Volume: {article.volume}</p>
                   <p>Pages: {article.pages}</p>
                   <p>DOI: {article.doi} </p>
-                  <p>Submission Claim: {article.subClaims} </p>
-                  <p>Submission Method: {article.method} </p>
+                  <p>Claim: {article.claims} </p>
+                  <p>Method: {article.method} </p>
                 </div>
               ) : (
                 <p>Loading...</p>

@@ -33,13 +33,9 @@ const ArticleSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  subClaims: {
+  claims: {
     type: String,
     required: true,
-  },
-  analystClaims: {
-    type: String,
-    default: "",
   },
   isForClaim: {
     type: String,

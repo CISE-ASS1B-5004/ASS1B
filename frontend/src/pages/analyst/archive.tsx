@@ -39,25 +39,22 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
   useEffect(() => {
     // Fetch articles from the API
     axios
-      .get("http://localhost:8082/api/analyst/archive", {
+    .get(`${process.env.NEXT_PUBLIC_API_URL}/api/analyst/archive`, {
         headers: { 'user-role': userRole } // send user role in headers
       })
       .then((response) => {
         const data = response.data || [];
         console.log(data);
         const fetchedArticles: ArticlesInterface[] = data.map(
-          (article: any) => ({
-            id: article.id ?? article._id,
-            title: article.title,
-            authors: article.authors,
-            journalName: article.journalName,
-            pubYear: article.pubYear,
-            volume: article.volume,
-            pages: article.pages,
-            doi: article.doi,
-            claims: article.claims,
-            method: article.method,
-          })
+          (article: any) => {
+            const transformedArticle: any = {};
+
+            headers.forEach((mapping) => {
+              transformedArticle[mapping.key] = article[mapping.key];
+            });
+
+            return transformedArticle;
+          }
         );
         setArticles(fetchedArticles);
         setIsLoading(false); // Data has been fetched

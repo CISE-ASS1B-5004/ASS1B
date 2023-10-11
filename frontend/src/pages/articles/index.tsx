@@ -12,8 +12,7 @@ interface ArticlesInterface {
   pages: string;
   doi: string;
   method: string;
-  subClaims: string;
-  analystClaims: string;
+  claims: string;
   isForClaim: string;
   strengthOfClaim: string;
   evidence: string;
@@ -32,10 +31,9 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
     { key: "pages", label: "Pages" },
     { key: "doi", label: "DOI" },
     { key: "method", label: "Method" },
-    { key: "subClaims", label: "Submission Claim" },
-    { key: "analystClaims", label: "Analyst Claim" },
-    { key: "isForClaim", label: "For/Against claim" },
-    { key: "strengthOfClaim", label: "Strength Of CLaim" },
+    { key: "claims", label: "Claim" },
+    { key: "isForClaim", label: "For/Against Claim" },
+    { key: "strengthOfClaim", label: "Strength Of Claim" },
     { key: "evidence", label: "evidence" },
   ];
 

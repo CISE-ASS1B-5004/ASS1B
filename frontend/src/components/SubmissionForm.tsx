@@ -130,7 +130,7 @@ export default function SubmissionForm() {
             <label htmlFor="claims">Claims:</label>
             <input
               className={formStyles.input}
-              {...register("subClaims")}
+              {...register("claims")}
               type="text"
               id="claims"
               placeholder="Claims"
