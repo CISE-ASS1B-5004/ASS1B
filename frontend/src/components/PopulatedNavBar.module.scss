@@ -1,73 +1,73 @@
-// A default font setting, you can replace 'Roboto' with your preferred font.
+@mixin flexbox($direction: row, $align: center, $justify: center) {
+  display: flex;
+  flex-direction: $direction;
+  align-items: $align;
+  justify-content: $justify;
+}
+
+// A default font setting
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 .user_container {
-    position: absolute;
-    aspect-ratio: 1;
-    backdrop-filter: brightness(50%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2em;
-    border-radius: 100%;
-    left: 1em
-  }
-  
-  .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    font-family: 'Roboto', sans-serif;
-  }
+  @include flexbox(column);
+  position: absolute;
+  aspect-ratio: 1;
+  backdrop-filter: brightness(50%);
+  width: 2em;
+  border-radius: 100%;
+  left: 1em;
+}
 
-  .title{
-    font-size: 4rem;
-    padding: 0.5rem;
-  }
+.container {
+  @include flexbox(column);
+  font-family: 'Roboto', sans-serif;
+}
 
-  .nav{
-    width: 100%;
-    padding: 1rem;
+.title {
+  font-size: 4rem;
+  padding: 0.5rem;
+}
 
-  }
+.nav {
+  @include flexbox();
+  width: 100%;
+  padding: 1rem;
+}
 
-  .role {
-    color: rgb(46, 255, 217); // Or whatever color you want
-    // other styles for displaying the role...
-    transition: all 0.3s ease;  // Transition applies to all properties
-  
-    // Cool hover effect
-    &:hover {
-      color: #ed2e8a;
-      transform: scale(1.15);  // Slightly enlarges the item
-    }
-  }
+.role {
+  color: rgb(46, 255, 217);
+  transition: all 0.3s ease;
 
-  .user{
-    display: flex;
-    align-items: center;
-    justify-content: right;
-    width: 100%;
+  &:hover {
+    color: #ed2e8a;
+    transform: scale(1.15);
   }
-  
-  .leftNav{
-    display: flex;
-    flex-grow: 1; 
-    width: 80%;
+}
+
+.user {
+  @include flexbox();
+  margin-left: 100px;
+  justify-content: flex-end; 
+  width: 100%;
+}
+
+.leftNav {
+  @include flexbox();
+  flex-grow: 1;
+  width: 80%;
+}
+
+.logoutButton {
+  background-color: rgb(225, 95, 95);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 15px;
+  margin-left: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: rgb(128, 39, 39);
   }
-  .logoutButton {
-    background-color: rgb(225, 95, 95);
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 15px;
-    margin-left: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  
-    &:hover {
-      background-color: rgb(128, 39, 39);
-    }
-  }
-  
+}
