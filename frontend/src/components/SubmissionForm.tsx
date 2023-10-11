@@ -8,7 +8,7 @@ export default function SubmissionForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const onSubmit = async (data: any) => {
-    const url = `http://localhost:8082/api/articles`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/articles`;
 
     try {
       const realAuthors = data.authors.split(",");
@@ -19,13 +19,6 @@ export default function SubmissionForm() {
           "Content-Type": "application/json",
         },
       });
-
-      console.log("URL:", url);
-      console.log("Data:", data);
-      console.log("Headers:", {
-        "Content-Type": "application/json",
-      });
-      
 
       console.log("Submitted successfully!");
       setIsSubmitted(true);
@@ -137,7 +130,7 @@ export default function SubmissionForm() {
             <label htmlFor="claims">Claims:</label>
             <input
               className={formStyles.input}
-              {...register("claims")}
+              {...register("subClaims")}
               type="text"
               id="claims"
               placeholder="Claims"
@@ -160,54 +153,6 @@ export default function SubmissionForm() {
             <input type="submit" className={formStyles.buttonItem} />
           </div>
         </div>
-
-        <div>
-          <label htmlFor="pages">Pages:</label>
-          <input
-            className={formStyles.input}
-            {...register("pages")}
-            type="number"
-            id="pages"
-            placeholder="Pages"
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="doi">DOI:</label>
-          <input
-            className={formStyles.input}
-            {...register("doi")}
-            type="text"
-            id="doi"
-            placeholder="DOI"
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="subClaims">Claims:</label>
-          <input
-            className={formStyles.input}
-            {...register("subClaims")}
-            type="text"
-            id="subClaims"
-            placeholder="Claims"
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="method">Method:</label>
-          <input
-            className={formStyles.input}
-            {...register("method")}
-            type="text"
-            id="method"
-            placeholder="Method"
-            required
-          />
-        </div>
-
-        <input type="submit" className={formStyles.buttonItem} />
       </form>
     </div>
   );

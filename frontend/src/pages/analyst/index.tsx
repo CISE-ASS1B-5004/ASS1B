@@ -31,14 +31,15 @@ const Evidence = () => {
   const [claimStrength, setClaimStrength] = useState("Weak");
   const [forClaim, setForClaim] = useState("For");
   const [title, setTitle] = useState("");
-  const [method, setMethod] = useState("");
+  // const [method, setMethod] = useState("");
+  const [analystMethod, setAnalystMethod] = useState("");
   const [evidence, setEvidence] = useState("");
   const [analystClaim, setAnalystClaim] = useState("");
 
   if (article) {
     article.analystClaims = analystClaim;
     article.strengthOfClaim = claimStrength;
-    article.method = method;
+    article.method = analystMethod;
     article.evidence = evidence;
     article.isForClaim = forClaim;
   }
@@ -167,6 +168,8 @@ const Evidence = () => {
         .then((response) => {
           // Set the fetched article data in the state
           setArticle(response.data);
+          console.log(response.data.method);
+          // setMethod(response.data.method);
         })
         .catch((error) => {
           console.error("Error fetching articles:", error);
@@ -293,7 +296,7 @@ const Evidence = () => {
                   <input
                     // className={formStyles.input}
                     onChange={(event) => {
-                      setMethod(event.target.value);
+                      setAnalystMethod(event.target.value);
                     }}
                     // {...register(`method`)}
 
