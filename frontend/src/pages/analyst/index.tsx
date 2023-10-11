@@ -39,6 +39,7 @@ const Evidence = () => {
   const { register, handleSubmit, reset } = useForm();
   
   const onSubmit = async () => {
+    console.log("onsubmit called");
     if (article) {
       article.claims = analystClaim;
       article.strengthOfClaim = claimStrength;
@@ -120,20 +121,61 @@ const Evidence = () => {
 
   //Called after successful update
   const handleApprove = () => {
-    axios
-      .put(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/analyst/approve/${articleId}`,
-        {},
-        {
-          headers: { "user-role": userRole }, // send user role in headers
-        }
-      )
-      .then(() => {
-        SetArticles(Articles.filter((article) => article._id !== articleId));
+    if (article) {
+      article.claims = analystClaim;
+      article.strengthOfClaim = claimStrength;
+      article.method = analystMethod;
+      article.evidence = evidence;
+      article.isForClaim = forClaim;
+    }
 
-        console.log(`ID: ${articleId} Approved!`);
-      })
-      .catch((error) => console.error("Error approving article:", error));
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/analyst/approve/${articleId}`;
+
+    console.log(articleId);
+    console.log("URL:", url);
+    // console.log("Data:", data);
+    console.log("Updating");
+
+    if (articleId) {
+      try {
+        console.log("Sending request...");
+        console.log(article);
+        axios
+          .put(url, article, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((response) => {
+            // Handle the successful response
+            console.log("Data:", response.data);
+          })
+          .catch((error) => {
+            // Handle errors
+            console.error("Error:", error);
+
+            // You can access the response status and data here:
+            if (error.response) {
+              console.error("Response Status:", error.response.status);
+              console.error("Response Data:", error.response.data);
+            }
+          });
+
+        console.log("URL:", url);
+        console.log("Data:", article);
+        console.log("Headers:", {
+          "Content-Type": "application/json",
+        });
+        // setIsSubmitted(true);
+        console.log("Updated successfully!");
+
+        // handleApprove();
+
+        reset(); // Reset the form fields
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
   };
 
   const handleReject = () => {
@@ -323,7 +365,7 @@ const Evidence = () => {
                   ></input>
                 </div>
                 <div className="Buttons">
-                  <button type="submit">Approve</button>
+                  <button onClick={() => handleApprove()}>Approve</button>
                   <button onClick={() => handleReject()}>Reject</button>
                 </div>
               </div>
