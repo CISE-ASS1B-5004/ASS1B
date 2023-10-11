@@ -17,8 +17,10 @@ const cors = require("cors");
 // routes
 const books = require("./routes/api/articles");
 const moderator = require("./routes/api/moderator");
-
+const admin = require("./routes/api/admin");
 const app = express();
+
+
 
 // Connect Database
 connectDB()
@@ -44,6 +46,7 @@ app.get("/", (req, res) =>
 // use Routes
 app.use("/api/articles", books);
 app.use("/api/moderator", moderator);
+app.use("/api/admin", admin);
 
 if (process.env.NODE_ENV !== 'production') {
   const port = process.env.PORT || 8082;
