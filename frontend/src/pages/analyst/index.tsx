@@ -3,7 +3,6 @@ import styles from "./evidence.module.css";
 import { useUserRole } from "../../components/UserContext";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useForm } from "react-hook-form";
 // import formStyles from "../styles/Form.module.scss";
 
 interface ArticlesInterface {
@@ -23,7 +22,7 @@ interface ArticlesInterface {
 }
 
 const Evidence = () => {
-  const [Articles, SetArticles] = useState<ArticlesInterface[]>([]);
+  const [articles, setArticles] = useState<ArticlesInterface[]>([]);
   const [article, setArticle] = useState<ArticlesInterface | null>(null);
   const [articleId, setArticleId] = useState<string | null>(null);
   const [userRole, setUserRole] = useUserRole(); // Get the user role using the hook
@@ -35,67 +34,6 @@ const Evidence = () => {
   const [evidence, setEvidence] = useState("");
   const [analystClaim, setAnalystClaim] = useState("");
 
-  
-  const { register, handleSubmit, reset } = useForm();
-  
-  const onSubmit = async () => {
-    console.log("onsubmit called");
-    if (article) {
-      article.claims = analystClaim;
-      article.strengthOfClaim = claimStrength;
-      article.method = analystMethod;
-      article.evidence = evidence;
-      article.isForClaim = forClaim;
-    }
-
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/analyst/approve/${articleId}`;
-
-    console.log(articleId);
-    console.log("URL:", url);
-    // console.log("Data:", data);
-    console.log("Updating");
-
-    if (articleId) {
-      try {
-        console.log("Sending request...");
-        console.log(article);
-        await axios
-          .put(url, article, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-          .then((response) => {
-            // Handle the successful response
-            console.log("Data:", response.data);
-          })
-          .catch((error) => {
-            // Handle errors
-            console.error("Error:", error);
-
-            // You can access the response status and data here:
-            if (error.response) {
-              console.error("Response Status:", error.response.status);
-              console.error("Response Data:", error.response.data);
-            }
-          });
-
-        console.log("URL:", url);
-        console.log("Data:", article);
-        console.log("Headers:", {
-          "Content-Type": "application/json",
-        });
-        // setIsSubmitted(true);
-        console.log("Updated successfully!");
-
-        // handleApprove();
-
-        reset(); // Reset the form fields
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    }
-  };
 
   //get all articles from analyst queue
   useEffect(() => {
@@ -110,7 +48,7 @@ const Evidence = () => {
             id: article._id, // Ensure the correct id is set here
           })
         );
-        SetArticles(fetchedArticles);
+        setArticles(fetchedArticles);
         setArticleId(fetchedArticles[0]._id);
         setTitle(fetchedArticles[0].title);
       })
@@ -120,7 +58,7 @@ const Evidence = () => {
   }, [userRole]);
 
   //Called after successful update
-  const handleApprove = () => {
+  const updateArticle = () => {
     if (article) {
       article.claims = analystClaim;
       article.strengthOfClaim = claimStrength;
@@ -129,7 +67,7 @@ const Evidence = () => {
       article.isForClaim = forClaim;
     }
 
-    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/analyst/approve/${articleId}`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/analyst/${articleId}`;
 
     console.log(articleId);
     console.log("URL:", url);
@@ -169,13 +107,28 @@ const Evidence = () => {
         // setIsSubmitted(true);
         console.log("Updated successfully!");
 
-        // handleApprove();
+        handleApprove(articleId);
 
-        reset(); // Reset the form fields
       } catch (error) {
         console.error("Error:", error);
       }
     }
+  };
+
+  const handleApprove = (id: string) => {
+    axios
+      .put(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/analyst/approve/${id}`,
+        {},
+        {
+          headers: { "user-role": userRole }, // send user role in headers
+        }
+      )
+      .then(() => {
+        setArticles(articles.filter(article => article._id !== id));
+        console.log('Approved!');
+      })
+      .catch((error) => console.error("Error approving article:", error));
   };
 
   const handleReject = () => {
@@ -189,8 +142,7 @@ const Evidence = () => {
       )
       .then(() => {
         console.log("Rejected!");
-        SetArticles(Articles.filter((article) => article._id !== articleId));
-        reset();
+        setArticles(articles.filter((article) => article._id !== articleId));
       })
       .catch((error) => console.error("Error rejecting article:", error));
   };
@@ -244,7 +196,6 @@ const Evidence = () => {
             <h1>Analysis of text</h1>
           </div>
           <form
-            onSubmit={handleSubmit(onSubmit)}
             className={styles.analystForm}
           >
             <div className={styles.left}>
@@ -255,7 +206,7 @@ const Evidence = () => {
                   onChange={(event) => handleArticle(event)}
                 >
                   <option value={title}>Select an Article</option>
-                  {Articles.map((article) => (
+                  {articles.map((article) => (
                     <option key={article._id} value={article._id}>
                       {article.title}
                     </option>
@@ -291,12 +242,10 @@ const Evidence = () => {
                     onChange={(event) => {
                       setAnalystClaim(event.target.value);
                     }}
-                    //  {...register(`analystClaims`)}
                     required
                   />
                 </div>
 
-                {/* Dropdown menus */}
                 <div className="dropdownMenus">
                   <div className="strenghtDropdown">
                     <label>Strength Of Claim</label>
@@ -305,11 +254,7 @@ const Evidence = () => {
                       onChange={(event) => {
                         setClaimStrength(event.target.value);
                       }}
-                      //   console.log(event.target.value);}}
-                      // {...register("claimStrength")}
-
-                      required
-                    >
+                      required>
                       <option value="Weak">Weak</option>
                       <option value="Average">Average</option>
                       <option value="Strong">Strong</option>
@@ -321,12 +266,8 @@ const Evidence = () => {
                       value={forClaim}
                       onChange={(event) => {
                         setForClaim(event.target.value);
-                      }}
-                      //   console.log(event.target.value);}}
-                      // {...register(`isForClaim`)}
-
-                      required
-                    >
+                      }} 
+                      required >
                       <option value="For">For</option>
                       <option value="Against">Against</option>
                     </select>
@@ -336,12 +277,9 @@ const Evidence = () => {
                 <div className="method">
                   <label htmlFor="method">Method:</label>
                   <input
-                    // className={formStyles.input}
                     onChange={(event) => {
                       setAnalystMethod(event.target.value);
                     }}
-                    // {...register(`method`)}
-
                     type="text"
                     id="method"
                     placeholder="Method"
@@ -358,14 +296,11 @@ const Evidence = () => {
                     onChange={(event) => {
                       setEvidence(event.target.value);
                     }}
-                    // console.log(event.target.value);}}
-                    // {...register("evidence")}
-
-                    required
-                  ></input>
+                    required>
+                  </input>
                 </div>
                 <div className="Buttons">
-                  <button onClick={() => handleApprove()}>Approve</button>
+                  <button onClick={() => updateArticle()}>Approve</button>
                   <button onClick={() => handleReject()}>Reject</button>
                 </div>
               </div>

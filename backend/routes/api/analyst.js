@@ -63,11 +63,11 @@ router.get("/:id", (req, res) => {
 // @access Analyst only
 router.put("/approve/:id", (req, res) => {
   const userRole = req.get("user-role");
-  // if (userRole !== "Analyst") {
-  //   return res
-  //     .status(403)
-  //     .json({ error: "Access Denied: You are not an Analyst!" });
-  // }
+  if (userRole !== "Analyst") {
+    return res
+      .status(403)
+      .json({ error: "Access Denied: You are not an Analyst!" });
+  }
 
   Article.findByIdAndUpdate(
     req.params.id,
@@ -106,16 +106,17 @@ router.put("/reject/:id", (req, res) => {
     );
 });
 
+
 // @route GET api/analyst/archive
 // @description Get all articles in the archive
 // @access Analyst only
 router.get("/archive", (req, res) => {
   const userRole = req.get("user-role");
-  // if (userRole !== "Analyst") {
-  //   return res
-  //     .status(403)
-  //     .json({ error: "Access Denied: You are not a Moderator!" });
-  // }
+  if (userRole !== "Analyst") {
+    return res
+      .status(403)
+      .json({ error: "Access Denied: You are not an Analyst!" });
+  }
 
   // Find articles that are rejected by either Moderator or Analyst
   Article.find({
@@ -136,11 +137,14 @@ router.get("/archive", (req, res) => {
     );
 });
 
+
 //update
 // @route GET api/analyst/update/:id
 // @description Update article
 // @access Public
 router.put("/:id", (req, res) => {
+  const userRole = req.get("user-role");
+
   Article.findByIdAndUpdate(req.params.id, req.body)
     .then((article) => {
       if (!article) {

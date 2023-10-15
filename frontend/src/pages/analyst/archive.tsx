@@ -39,22 +39,25 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
   useEffect(() => {
     // Fetch articles from the API
     axios
-    .get(`${process.env.NEXT_PUBLIC_API_URL}/api/analyst/archive`, {
-        headers: { 'user-role': userRole } // send user role in headers
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/api/analyst/archive`, {
+        headers: { "user-role": userRole }, // send user role in headers
       })
       .then((response) => {
         const data = response.data || [];
         console.log(data);
         const fetchedArticles: ArticlesInterface[] = data.map(
-          (article: any) => {
-            const transformedArticle: any = {};
-
-            headers.forEach((mapping) => {
-              transformedArticle[mapping.key] = article[mapping.key];
-            });
-
-            return transformedArticle;
-          }
+          (article: any) => ({
+            id: article.id ?? article._id,
+            title: article.title,
+            authors: article.authors,
+            journalName: article.journalName,
+            pubYear: article.pubYear,
+            volume: article.volume,
+            pages: article.pages,
+            doi: article.doi,
+            claims: article.claims,
+            method: article.method,
+          })
         );
         setArticles(fetchedArticles);
         setIsLoading(false); // Data has been fetched
@@ -67,11 +70,14 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
 
   return (
     <div className="container">
-      <h1>Analyst Archive Index Page</h1>
-      <p>Page containing a table of archived articles which are rejected by Moderator or Analyst:</p>
+      <h1>Articles Index Page</h1>
+      <p>
+        Page containing a table of archived articles which are rejected by
+        Moderator or Analyst:
+      </p>
       {isLoading ? (
         <div>Loading...</div>
-      ) : articles?.length === 0 ? (  // using optional chaining to prevent when article is undefined
+      ) : articles?.length === 0 ? ( // using optional chaining to prevent when article is undefined
         <div>No Articles found in the archive list</div>
       ) : (
         <SortableTable headers={headers} data={articles} />
