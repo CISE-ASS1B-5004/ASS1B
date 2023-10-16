@@ -26,6 +26,37 @@
 .title {
   font-size: 4rem;
   padding: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.title span {
+  margin-left: 12px;
+  margin-right: 12px;
+}
+
+.titleLogo span {
+  margin: 0;
+}
+
+.titleLogo {
+  background-color: #282c34;
+  border-radius: 5px;
+  padding: 4px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.brackets {
+  color: #61afef;
+}
+
+.slash {
+  color: #c678dd;
+}
+
+.titleText {
+  font-size: 95%;
+  font-weight: bold;
 }
 
 .nav {
@@ -47,7 +78,7 @@
 .user {
   @include flexbox();
   margin-left: 100px;
-  justify-content: flex-end; 
+  justify-content: flex-end;
   width: 100%;
 }
 

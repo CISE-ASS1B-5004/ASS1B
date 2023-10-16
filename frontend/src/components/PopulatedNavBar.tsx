@@ -28,11 +28,18 @@ const PopulatedNavBar = () => {
       default:
         break;
     }
-  }
+  };
 
   return (
     <div className={styles.container}>
-      <div className={styles.title}>SPEED</div>{" "}
+      <div className={styles.title}>
+        <div className={styles.titleLogo}>
+          <span className={styles.brackets}>{`<`}</span>
+          <span className={styles.slash}>{`/`}</span>
+          <span className={styles.brackets}>{`>`}</span>
+        </div>
+        <span className={styles.titleText}>SPEED</span>
+      </div>
       {/* Moved SPEED above the NavBar */}
       <div className={styles.nav}>
         <NavBar>
@@ -40,7 +47,6 @@ const PopulatedNavBar = () => {
             <NavItem route="/">Home</NavItem>
             <NavItem route="/articles/new">Submit New</NavItem>
             <NavItem route="/articles/search">Search</NavItem>
-            
           </div>
           <div className={styles.user}>
             {" "}
