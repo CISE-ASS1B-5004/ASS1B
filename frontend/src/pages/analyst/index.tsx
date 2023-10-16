@@ -3,6 +3,7 @@ import styles from "./evidence.module.css";
 import { useUserRole } from "../../components/UserContext";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import pageStyles from "../../styles/pages.module.scss";
 // import formStyles from "../styles/Form.module.scss";
 
 interface ArticlesInterface {
@@ -33,7 +34,6 @@ const Evidence = () => {
   const [analystMethod, setAnalystMethod] = useState("");
   const [evidence, setEvidence] = useState("");
   const [analystClaim, setAnalystClaim] = useState("");
-
 
   //get all articles from analyst queue
   useEffect(() => {
@@ -108,7 +108,6 @@ const Evidence = () => {
         console.log("Updated successfully!");
 
         handleApprove(articleId);
-
       } catch (error) {
         console.error("Error:", error);
       }
@@ -125,8 +124,8 @@ const Evidence = () => {
         }
       )
       .then(() => {
-        setArticles(articles.filter(article => article._id !== id));
-        console.log('Approved!');
+        setArticles(articles.filter((article) => article._id !== id));
+        console.log("Approved!");
       })
       .catch((error) => console.error("Error approving article:", error));
   };
@@ -178,136 +177,138 @@ const Evidence = () => {
   };
 
   return (
-    <div className={styles.container}>
-      {userRole !== "Analyst" ? (
-        <div style={{ color: "red", textAlign: "center", marginTop: "20px" }}>
-          <h1>403 Access Denied</h1>
-          <p>You do not have permission to view this page.</p>
-        </div>
-      ) : (
-        <>
-          <div className="Header">
-            <button
-              onClick={handleNavigateToArchive}
-              style={{ display: "block", marginBottom: "20px" }}
-            >
-              Go to Archive
-            </button>
-            <h1>Analysis of text</h1>
+    <div className={pageStyles.page}>
+      <div className={styles.container}>
+        {userRole !== "Analyst" ? (
+          <div style={{ color: "red", textAlign: "center", marginTop: "20px" }}>
+            <h1>403 Access Denied</h1>
+            <p>You do not have permission to view this page.</p>
           </div>
-          <form
-            className={styles.analystForm}
-          >
-            <div className={styles.left}>
-              <div className={styles.queue}>
-                <select
-                  className={styles.menu}
-                  value={title}
-                  onChange={(event) => handleArticle(event)}
-                >
-                  <option value={title}>Select an Article</option>
-                  {articles.map((article) => (
-                    <option key={article._id} value={article._id}>
-                      {article.title}
-                    </option>
-                  ))}
-                </select>
+        ) : (
+          <>
+            <div className="Header">
+              <button
+                onClick={handleNavigateToArchive}
+                style={{ display: "block", marginBottom: "20px" }}
+              >
+                Go to Archive
+              </button>
+              <h1>Analysis of text</h1>
+            </div>
+            <form className={styles.analystForm}>
+              <div className={styles.left}>
+                <div className={styles.queue}>
+                  <select
+                    className={styles.menu}
+                    value={title}
+                    onChange={(event) => handleArticle(event)}
+                  >
+                    <option value={title}>Select an Article</option>
+                    {articles.map((article) => (
+                      <option key={article._id} value={article._id}>
+                        {article.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {article ? (
+                  <div className="info">
+                    <h3>Title: {article.title}</h3>
+                    <p>Authors:{article.authors} </p>
+                    <p>Journal Name: {article.journalName}</p>
+                    <p>Publication Year: {article.pubYear}</p>
+                    <p>Volume: {article.volume}</p>
+                    <p>Pages: {article.pages}</p>
+                    <p>DOI: {article.doi} </p>
+                    <p>Claim: {article.claims} </p>
+                    <p>Method: {article.method} </p>
+                  </div>
+                ) : (
+                  <p>Loading...</p>
+                )}
               </div>
 
-              {article ? (
-                <div className="info">
-                  <h3>Title: {article.title}</h3>
-                  <p>Authors:{article.authors} </p>
-                  <p>Journal Name: {article.journalName}</p>
-                  <p>Publication Year: {article.pubYear}</p>
-                  <p>Volume: {article.volume}</p>
-                  <p>Pages: {article.pages}</p>
-                  <p>DOI: {article.doi} </p>
-                  <p>Claim: {article.claims} </p>
-                  <p>Method: {article.method} </p>
-                </div>
-              ) : (
-                <p>Loading...</p>
-              )}
-            </div>
-
-            <div className={styles.analystEvidence}>
-              <div className="evidence">
-                <div className="section">
-                  <label className={styles.label}>Claim:</label>
-                  <input
-                    type="text"
-                    placeholder="Claim"
-                    id="claim"
-                    onChange={(event) => {
-                      setAnalystClaim(event.target.value);
-                    }}
-                    required
-                  />
-                </div>
-
-                <div className="dropdownMenus">
-                  <div className="strenghtDropdown">
-                    <label className={styles.label}>Strength Of Claim</label>
-                    <select
-                      value={claimStrength}
-                      onChange={(event) => {
-                        setClaimStrength(event.target.value);
-                      }}
-                      required>
-                      <option value="Weak">Weak</option>
-                      <option value="Average">Average</option>
-                      <option value="Strong">Strong</option>
-                    </select>
-                  </div>
-                  <div className="to/forClaim">
-                    <label>For/Against claim</label>
-                    <select
-                      value={forClaim}
-                      onChange={(event) => {
-                        setForClaim(event.target.value);
-                      }} 
-                      required >
-                      <option value="For">For</option>
-                      <option value="Against">Against</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="method">
-                  <label htmlFor="method">Method:</label>
-                  <input
-                    onChange={(event) => {
-                      setAnalystMethod(event.target.value);
-                    }}
-                    type="text"
-                    id="method"
-                    placeholder="Method"
-                    required
-                  />
-                </div>
+              <div className={styles.analystEvidence}>
                 <div className="evidence">
-                  <label htmlFor="evidence">Evidence:</label>
-                  <input
-                    className={styles.evidenceInput}
-                    type="text"
-                    placeholder="Evidence"
-                    id="evidence"
-                    onChange={(event) => {
-                      setEvidence(event.target.value);
-                    }}
-                    required>
-                  </input>
-                </div>
-                <div className={styles.buttons}>
-                  <button onClick={() => updateArticle()}>Approve</button>
-                  <button onClick={() => handleReject()}>Reject</button>
+                  <div className="section">
+                    <label className={styles.label}>Claim:</label>
+                    <input
+                      type="text"
+                      placeholder="Claim"
+                      id="claim"
+                      onChange={(event) => {
+                        setAnalystClaim(event.target.value);
+                      }}
+                      required
+                    />
+                  </div>
+
+                  <div className="dropdownMenus">
+                    <div className="strenghtDropdown">
+                      <label className={styles.label}>Strength Of Claim</label>
+                      <select
+                        value={claimStrength}
+                        onChange={(event) => {
+                          setClaimStrength(event.target.value);
+                        }}
+                        required
+                      >
+                        <option value="Weak">Weak</option>
+                        <option value="Average">Average</option>
+                        <option value="Strong">Strong</option>
+                      </select>
+                    </div>
+                    <div className="to/forClaim">
+                      <label>For/Against claim</label>
+                      <select
+                        value={forClaim}
+                        onChange={(event) => {
+                          setForClaim(event.target.value);
+                        }}
+                        required
+                      >
+                        <option value="For">For</option>
+                        <option value="Against">Against</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="method">
+                    <label htmlFor="method">Method:</label>
+                    <input
+                      onChange={(event) => {
+                        setAnalystMethod(event.target.value);
+                      }}
+                      type="text"
+                      id="method"
+                      placeholder="Method"
+                      required
+                    />
+                  </div>
+                  <div className="evidence">
+                    <label htmlFor="evidence">Evidence:</label>
+                    <input
+                      className={styles.evidenceInput}
+                      type="text"
+                      placeholder="Evidence"
+                      id="evidence"
+                      onChange={(event) => {
+                        setEvidence(event.target.value);
+                      }}
+                      required
+                    ></input>
+                  </div>
+                  <div className={styles.buttons}>
+                    <button onClick={() => updateArticle()}>Approve</button>
+                    <button onClick={() => handleReject()}>Reject</button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </form>
-        </>
-      )}
+            </form>
+          </>
+        )}
+      </div>
     </div>
   );
 };
