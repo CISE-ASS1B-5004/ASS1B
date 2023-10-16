@@ -39,7 +39,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
   useEffect(() => {
     // Fetch articles from the API
     axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/api/analyst/archive`, {
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/api/moderator/archive`, {
         headers: { "user-role": userRole }, // send user role in headers
       })
       .then((response) => {

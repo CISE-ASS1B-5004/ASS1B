@@ -89,11 +89,11 @@ router.put("/approve/:id", (req, res) => {
 // @access Analyst only
 router.put("/reject/:id", (req, res) => {
   const userRole = req.get("user-role");
-  // if (userRole !== "Analyst") {
-  //   return res
-  //     .status(403)
-  //     .json({ error: "Access Denied: You are not an Analyst!" });
-  // }
+  if (userRole !== "Analyst") {
+    return res
+      .status(403)
+      .json({ error: "Access Denied: You are not an Analyst!" });
+  }
 
   Article.findByIdAndUpdate(
     req.params.id,
@@ -103,37 +103,6 @@ router.put("/reject/:id", (req, res) => {
     .then((article) => res.json({ msg: "Updated successfully" }))
     .catch((err) =>
       res.status(400).json({ error: "Unable to update the Database" })
-    );
-});
-
-
-// @route GET api/analyst/archive
-// @description Get all articles in the archive
-// @access Analyst only
-router.get("/archive", (req, res) => {
-  const userRole = req.get("user-role");
-  if (userRole !== "Analyst") {
-    return res
-      .status(403)
-      .json({ error: "Access Denied: You are not an Analyst!" });
-  }
-
-  // Find articles that are rejected by either Moderator or Analyst
-  Article.find({
-    $or: [{ isRejectedByModerator: true }, { isRejectedByAnalyst: true }],
-  })
-    .then((articles) => {
-      if (articles.length === 0) {
-        return res
-          .status(404)
-          .json({ noarticlesfound: "No Articles found in the archive" });
-      }
-      res.json(articles);
-    })
-    .catch((err) =>
-      res
-        .status(500)
-        .json({ error: "An error occurred while retrieving the articles" })
     );
 });
 
