@@ -136,7 +136,10 @@ router.get("/archive", (req, res) => {
 
   // Find articles that are rejected by either Moderator or Analyst
   Article.find({
-    $or: [{ isRejectedByModerator: true }, { isRejectedByAnalyst: true }],
+    $or: [
+      { isRejectedByModerator: true }, 
+      { isRejectedByAnalyst: true }
+    ],
   })
     .then((articles) => {
       if (articles.length === 0) {
