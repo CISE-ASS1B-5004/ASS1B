@@ -17,7 +17,7 @@
   margin: 0 0.3rem;  // Added margin for spacing between items
   cursor: default;
   transition: all 0.3s ease;  // Transition applies to all properties
-  
+  text-wrap: nowrap;
   // Cool hover effect
   &:hover {
     color: #ed2e8a;
