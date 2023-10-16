@@ -1,0 +1,37 @@
+.left {
+    /* border: 2px solid red; */
+    width: 30vw;
+}
+
+.analystEvidence {
+    width: 60vw;
+    /* border: 2px solid green; */
+   display:flex;
+   flex-direction:row;
+   padding: 10px;
+   justify-content: center;
+} 
+.label {
+    padding: 10px;
+}
+
+.buttons{
+    margin: 10px;
+
+    /* border: 2px solid purple; */
+}
+
+.analystForm {
+    /* border: 2px solid Blue; */
+    display: flex;
+    flex-direction: row;
+    height: 50vh;
+}
+
+.menu{
+    justify-self: center;
+}
+
+.evidenceInput {
+    height: 15vh;
+}

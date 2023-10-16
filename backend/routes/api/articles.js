@@ -13,7 +13,7 @@ router.get("/test", (req, res) => res.send("article route testing!"));
 // @description Get all articles
 // @access Public
 router.get("/", (req, res) => {
-  Article.find()
+  Article.find({ isApprovedByModerator: true})
     .then((articles) => res.json(articles))
     .catch((err) =>
       res.status(404).json({ noarticlesfound: "No Articles found" })

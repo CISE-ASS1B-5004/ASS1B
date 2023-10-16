@@ -1,6 +1,7 @@
 
 .table{
     width: 80vw;
+    align-self: center;
 } 
 
 .th, .td{
@@ -9,4 +10,9 @@
 
 .headings{
     font-weight: bold;
+}
+
+.dropdownMenus {
+    display:flex;
+    flex-direction: row;
 }
