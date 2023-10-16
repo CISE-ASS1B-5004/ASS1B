@@ -16,7 +16,7 @@ const Modal: React.FC<ModalProps> = ({ article, onClose }) => {
     const handlePeerReviewSubmit = () => {
         // Assuming article has a unique identifier in _id field
         axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/peerReview/${article._id}`, {
-          id: article._id,
+          articleId: article._id,
           review: peerReview,
         })
         .then((response) => {
