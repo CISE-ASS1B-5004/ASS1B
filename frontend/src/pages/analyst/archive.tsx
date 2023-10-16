@@ -43,7 +43,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
     
     axios
       .get(`${process.env.NEXT_PUBLIC_API_URL}/api/moderator/archive`, {
-        headers: { "user-role": 'Moderator' }, // send user role in headers
+        headers: { "user-role": userRole }, // send user role in headers
       })
       .then((response) => {
         const data = response.data || [];
@@ -66,7 +66,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
         setIsLoading(false); // Data has been fetched
       })
       .catch((error) => {
-       console.log('Can\'t Fetch Archive...');
+        console.log('Can\'t Fetch Archive...');
         console.error("Error fetching articles:", error);
         setIsLoading(false); // An error occurred while fetching
       });
