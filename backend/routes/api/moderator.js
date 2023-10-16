@@ -90,6 +90,12 @@ router.put("/reject/:id", (req, res) => {
 // @description Get all articles in the archive
 // @access Moderator only
 router.get("/archive", (req, res) => {
+  const userRole = req.get("user-role");
+  if (userRole == "Moderator") {
+    return res
+      .status(403)
+      .json({ error: "Access Denied: You are not a Moderator!" });
+  }
 
   // Find articles that are rejected by either Moderator or Analyst
   Article.find({
