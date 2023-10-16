@@ -18,6 +18,7 @@ interface ArticlesInterface {
   doi: string;
   claims: string;
   method: string;
+  review: string;
 }
 
 const Articles: React.FC = () => {

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import styles from "../styles/moderator.Modal.module.scss";
 import { ArticlesInterface } from "../utils/types";
-import styles from "../styles/moderator.Modal.module.scss"
+import axios from "axios";
 
 interface ModalProps {
     article: ArticlesInterface | null;
@@ -13,8 +14,20 @@ const Modal: React.FC<ModalProps> = ({ article, onClose }) => {
     if (!article) return null;
   
     const handlePeerReviewSubmit = () => {
-      console.log("Peer Review Submitted:", peerReview);
-    };
+        // Assuming article has a unique identifier in _id field
+        axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/peerReview/${article._id}`, {
+          id: article._id,
+          review: peerReview,
+        })
+        .then((response) => {
+          console.log(response.data.msg);
+          // Maybe close the modal or give some user feedback
+          onClose();
+        })
+        .catch((error) => {
+          console.error("Error submitting peer review:", error);
+        });
+      };
   
     return (
         <div className={styles.modalOverlay}>
@@ -29,6 +42,7 @@ const Modal: React.FC<ModalProps> = ({ article, onClose }) => {
                     <p><strong>DOI:</strong> {article.doi}</p>
                     <p><strong>Claims:</strong> {article.claims}</p>
                     <p><strong>Method:</strong> {article.method}</p>
+                    <p><strong>Peer Review: </strong> {article.review}</p>
                     <button onClick={onClose} className={styles.closeButton}>Close</button>
                 </div>
                 <div className={styles.peerReviewSection}>
