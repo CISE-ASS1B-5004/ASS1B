@@ -42,26 +42,20 @@ router.get("/", (req, res) => {
 // @description Approve an article in the moderation queue
 // @access Moderator only
 router.put("/approve/:id", (req, res) => {
-  const userRole = req.get("user-role");
-  if (userRole !== "Moderator") {
-    return res
-      .status(403)
-      .json({ error: "Access Denied: You are not a Moderator!" });
+  const userRole = req.get('user-role');
+  if (userRole !== 'Moderator') {
+    return res.status(403).json({ error: "Access Denied: You are not a Moderator!" });
   }
 
   Article.findByIdAndUpdate(
-    req.params.id,
+    req.params.id, 
     { isApprovedByModerator: true },
     { new: true } // Return the updated object
   )
-    .then(
-      (article) => console.log("Approved"),
-      res.json({ msg: "Updated successfully" })
-    )
-    .catch(
-      (err) => res.status(400).json({ error: "Unable to update the Database" }),
-      console.log("Cannot approve")
-    );
+  .then((article) => res.json({ msg: "Updated successfully" }))
+  .catch((err) =>
+    res.status(400).json({ error: "Unable to update the Database" })
+  );
 });
 
 // @route PUT api/moderator/reject/:id
