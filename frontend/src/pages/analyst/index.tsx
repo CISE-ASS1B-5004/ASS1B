@@ -234,7 +234,7 @@ const Evidence = () => {
             <div className={styles.analystEvidence}>
               <div className="evidence">
                 <div className="section">
-                  <label htmlFor="claim">Claim:</label>
+                  <label className={styles.label}>Claim:</label>
                   <input
                     type="text"
                     placeholder="Claim"
@@ -248,7 +248,7 @@ const Evidence = () => {
 
                 <div className="dropdownMenus">
                   <div className="strenghtDropdown">
-                    <label>Strength Of Claim</label>
+                    <label className={styles.label}>Strength Of Claim</label>
                     <select
                       value={claimStrength}
                       onChange={(event) => {
@@ -299,7 +299,7 @@ const Evidence = () => {
                     required>
                   </input>
                 </div>
-                <div className="Buttons">
+                <div className={styles.buttons}>
                   <button onClick={() => updateArticle()}>Approve</button>
                   <button onClick={() => handleReject()}>Reject</button>
                 </div>
