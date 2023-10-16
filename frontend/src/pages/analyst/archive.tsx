@@ -39,8 +39,10 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
   useEffect(() => {
     // Fetch articles from the API
     console.log(userRole);
+    console.log('Getting Archive...');
+    
     axios
-      .get(`${process.env.NEXT_PUBLIC_API_URL}/api/analyst/archive`, {
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/api/moderator/archive`, {
         headers: { "user-role": userRole }, // send user role in headers
       })
       .then((response) => {
@@ -64,6 +66,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
         setIsLoading(false); // Data has been fetched
       })
       .catch((error) => {
+        console.log('Can\'t Fetch Archive...');
         console.error("Error fetching articles:", error);
         setIsLoading(false); // An error occurred while fetching
       });
@@ -78,9 +81,11 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
       </p>
       {isLoading ? (
         <div>Loading...</div>
-      ) : articles?.length === 0 ? ( // using optional chaining to prevent when article is undefined
+      ) : 
+      articles?.length === 0 ? ( // using optional chaining to prevent when article is undefined
         <div>No Articles found in the archive list</div>
-      ) : (
+      ) : 
+      (
         <SortableTable headers={headers} data={articles} />
       )}
     </div>

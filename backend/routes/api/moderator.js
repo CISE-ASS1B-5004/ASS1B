@@ -85,7 +85,7 @@ router.put("/reject/:id", (req, res) => {
 // @access Moderator only
 router.get("/archive", (req, res) => {
   const userRole = req.get("user-role");
-  if (userRole !== "Moderator") {
+  if (userRole !== "Moderator" && userRole !=="Analyst") {
     return res
       .status(403)
       .json({ error: "Access Denied: You are not a Moderator!" });

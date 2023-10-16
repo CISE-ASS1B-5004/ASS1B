@@ -14,9 +14,9 @@ router.get("/test", (req, res) => res.send("analyst route testing!"));
 // @access Analyst only
 router.get("/", (req, res) => {
   const userRole = req.get("user-role");
-  // if (userRole !== 'Analyst') {
-  //   return res.status(403).json({ error: "Access Denied: You are not an Analyst!" });
-  // }
+  if (userRole !== 'Analyst') {
+    return res.status(403).json({ error: "Access Denied: You are not an Analyst!" });
+  }
 
   Article.find({
     isApprovedByModerator: true,
@@ -43,9 +43,9 @@ router.get("/", (req, res) => {
 // @access Analyst only
 router.get("/:id", (req, res) => {
   const userRole = req.get("user-role");
-  // if (userRole !== 'Analyst') {
-  //   return res.status(403).json({ error: "Access Denied: You are not an Analyst!" });
-  // }
+  if (userRole !== 'Analyst') {
+    return res.status(403).json({ error: "Access Denied: You are not an Analyst!" });
+  }
 
   Article.findById(req.params.id)
     .then((article) => {
@@ -106,8 +106,6 @@ router.put("/reject/:id", (req, res) => {
     );
 });
 
-
-//update
 // @route GET api/analyst/update/:id
 // @description Update article
 // @access Public
@@ -126,34 +124,5 @@ router.put("/:id", (req, res) => {
     );
 });
 
-router.get("/archive", (req, res) => {
-  const userRole = req.get("user-role");
-  if (userRole !== 'Analyst') {
-    return res
-      .status(403)
-      .json({ error: "Access Denied: You are not an Analyst!" });
-  }
-
-  // Find articles that are rejected by either Moderator or Analyst
-  Article.find({
-    $or: [
-      { isRejectedByModerator: true }, 
-      { isRejectedByAnalyst: true }
-    ],
-  })
-    .then((articles) => {
-      if (articles.length === 0) {
-        return res
-          .status(404)
-          .json({ noarticlesfound: "No Articles found in the archive" });
-      }
-      res.json(articles);
-    })
-    .catch((err) =>
-      res
-        .status(500)
-        .json({ error: "An error occurred while retrieving the articles" })
-    );
-});
 
 module.exports = router;
