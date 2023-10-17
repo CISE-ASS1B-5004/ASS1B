@@ -4,7 +4,6 @@ import { useUserRole } from "../../components/UserContext";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import pageStyles from "../../styles/pages.module.scss";
-// import formStyles from "../styles/Form.module.scss";
 
 interface ArticlesInterface {
   title: string;
@@ -71,7 +70,6 @@ const Evidence = () => {
 
     console.log(articleId);
     console.log("URL:", url);
-    // console.log("Data:", data);
     console.log("Updating");
 
     if (articleId) {
@@ -104,7 +102,6 @@ const Evidence = () => {
         console.log("Headers:", {
           "Content-Type": "application/json",
         });
-        // setIsSubmitted(true);
         console.log("Updated successfully!");
 
         handleApprove(articleId);
@@ -149,7 +146,6 @@ const Evidence = () => {
   const handleArticle = (e: React.ChangeEvent<HTMLSelectElement>) => {
     //get id of selected title
     setArticleId(e.target.value);
-    // setTitle(e.target.title);
     console.log(`id: ${articleId} `);
   };
 

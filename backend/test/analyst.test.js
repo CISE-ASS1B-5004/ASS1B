@@ -32,8 +32,49 @@ describe('Analyst API', () => {
     expect(res.body.error).toEqual('Access Denied: You are not an Analyst!');
   });
 
-  // Testing whether the page shows only one article when it has been added one article in the queue
-  it('should list ALL articles in the moderation queue on /api/analyst GET', async () => {
+ 
+
+  // Testing GET /api/moderator/archive
+  it('should list ALL articles in the archive on /api/moderator/archive GET', async () => {
+    // Delete all the articles to make Moderation Queue empty
+    await Article.deleteMany({});
+    // Create one article rejected by Moderator for testing
+    await Article.create({
+      title: 'Rejected by Moderator',
+      authors: 'michael',
+      journalName: 'Test',
+      pubYear: '1',
+      volume: '1',
+      pages: '1',
+      doi: 'Test',
+      claims: 'Test',
+      method: 'Test',
+      isRejectedByModerator: true,
+    });
+
+    // Create one article rejected by Analyst for testing
+    await Article.create({
+      title: 'Rejected by Analyst',
+      authors: 'michael',
+      journalName: 'Test',
+      pubYear: '1',
+      volume: '1',
+      pages: '1',
+      doi: 'Test',
+      claims: 'Test',
+      method: 'Test',
+      isRejectedByAnalyst: true,
+    });
+
+    const res = await request(server).get('/api/moderator/archive').set('user-role', 'Moderator'); // Include user-role header
+    expect(res.status).toEqual(200);
+    expect(res.body).toHaveLength(2); // We have added two articles to the archive, so we expect the length of res.body to be 2
+    expect(res.body.some(article => article.title === 'Rejected by Moderator')).toBeTruthy();
+    expect(res.body.some(article => article.title === 'Rejected by Analyst')).toBeTruthy();
+  });
+
+   // Testing whether the page shows only one article when it has been added one article in the queue
+  it('should list ALL articles in the analyst queue on /api/analyst GET', async () => {
     //clear queue for testing
     await Article.deleteMany({});
 
@@ -49,11 +90,7 @@ describe('Analyst API', () => {
       claims: 'Test',
       method: 'Test',
       isApprovedByModerator: true,
-      isRejectedByModerator: false,
-      isApprovedByAnalyst: false,
-      isRejectedByAnalyst: false,
-
-    });
+      });
 
     const res = await request(server).get('/api/analyst').set('user-role', 'Analyst'); // Include user-role header
     expect(res.status).toEqual(200);
@@ -95,4 +132,25 @@ describe('Analyst API', () => {
     expect(res.body).toHaveProperty('msg', 'Updated successfully');
   });
 
-});
+  it('should return error when trying to approve non-existent article', async () => {
+    const res = await request(server).put('/api/analyst/approve/nonexistentid').set('user-role', 'Analyst'); // Include user-role header
+    expect(res.status).toEqual(400);
+    expect(res.body).toHaveProperty('error', 'Unable to update the Database');
+  });
+
+    
+  it('should return 403 if not a moderator for GET /api/moderator/archive', async () => {
+    const res = await request(server).get('/api/moderator/archive'); // No user-role header
+    expect(res.statusCode).toEqual(403);
+    expect(res.body.error).toEqual('Access Denied: You are not a Moderator!');
+  });
+
+  it('should return appropriate error message if no articles in the archive', async () => {
+    // Delete all the articles to make Archive empty
+    await Article.deleteMany({});
+
+    const res = await request(server).get('/api/moderator/archive').set('user-role', 'Moderator'); // Include user-role header
+    expect(res.status).toEqual(404);
+    expect(res.body.noarticlesfound).toEqual('No Articles found in the archive');
+  });
+  });
