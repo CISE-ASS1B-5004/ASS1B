@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import { GetStaticProps, NextPage } from "next";
+import { useEffect, useState } from "react";
+import { useUserRole } from "../components/UserContext";
 import styles from "../styles/moderator.Modal.module.scss";
 import { ArticlesInterface } from "../utils/types";
 import axios from "axios";
@@ -9,25 +11,27 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ article, onClose }) => {
+    const [userRole, setUserRole] = useUserRole();
     const [peerReview, setPeerReview] = useState("");
-  
+    
     if (!article) return null;
-  
+
     const handlePeerReviewSubmit = () => {
         // Assuming article has a unique identifier in _id field
-        axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/peerReview/${article._id}`, {
-          articleId: article._id,
-          review: peerReview,
-        })
-        .then((response) => {
-          console.log(response.data.msg);
-          // Maybe close the modal or give some user feedback
-          onClose();
+        axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/moderator/peerReview/${article._id}`, {
+            _id: article._id,
+            review: peerReview,
+        },{
+          headers: { "user-role": userRole }, // send user role in headers
+        }).then((response) => {
+            console.log(response.data.msg);
+            console.log(peerReview);
+            onClose();
         })
         .catch((error) => {
           console.error("Error submitting peer review:", error);
         });
-      };
+    };
   
     return (
         <div className={styles.modalOverlay}>

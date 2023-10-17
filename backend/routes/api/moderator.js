@@ -114,16 +114,17 @@ router.get("/archive", (req, res) => {
 // @description Update the article with a peer review
 // @access Moderator only
 router.put("/peerReview/:id", (req, res) => {
-  // const userRole = req.get('user-role');
-  // if (userRole !== 'Moderator') {
-  //   return res.status(403).json({ error: "Access Denied: You are not a Moderator!" });
-  // }
+  const userRole = req.get('user-role');
+  if (userRole !== 'Moderator') {
+    return res.status(403).json({ error: "Access Denied: You are not a Moderator!" });
+  }
 
-  const { review } = req.body;
+  const review  = req.body.review;
 
   Article.findByIdAndUpdate(
     req.params.id, 
     { review },
+    // { review: req.body },
     { new: true } // Return the updated object
   )
   .then((article) => res.json({ msg: "Updated successfully" }))
