@@ -9,4 +9,5 @@ export interface ArticlesInterface {
     doi: string;
     claims: string;
     method: string;
+    review: string;
 }

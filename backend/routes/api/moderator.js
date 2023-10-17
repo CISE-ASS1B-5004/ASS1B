@@ -110,4 +110,26 @@ router.get("/archive", (req, res) => {
     );
 });
 
+// @route PUT api/moderator/peerReview/:id
+// @description Update the article with a peer review
+// @access Moderator only
+router.put("/peerReview/:id", (req, res) => {
+  // const userRole = req.get('user-role');
+  // if (userRole !== 'Moderator') {
+  //   return res.status(403).json({ error: "Access Denied: You are not a Moderator!" });
+  // }
+
+  const { review } = req.body;
+
+  Article.findByIdAndUpdate(
+    req.params.id, 
+    { review },
+    { new: true } // Return the updated object
+  )
+  .then((article) => res.json({ msg: "Updated successfully" }))
+  .catch((err) =>
+    res.status(400).json({ error: "Unable to update the Database" })
+  );
+});
+
 module.exports = router;

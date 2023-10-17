@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useUserRole } from "../../components/UserContext";
 import { useRouter } from "next/router";
-import Modal from "../../components/Modal";
+import Modal from "../../components/ModeratorModal";
 import css from "../../styles/moderator.module.scss";
 
 interface ArticlesInterface {
@@ -18,6 +18,7 @@ interface ArticlesInterface {
   doi: string;
   claims: string;
   method: string;
+  review: string;
 }
 
 const Articles: React.FC = () => {
