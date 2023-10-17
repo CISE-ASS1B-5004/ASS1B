@@ -63,7 +63,8 @@ const Articles: React.FC = () => {
         }
       )
       .then(() => {
-        setArticles(articles.filter((article) => article._id !== id));
+        setArticles(articles.filter(article => article._id !== id));
+        console.log('Approved!');
       })
       .catch((error) => console.error("Error approving article:", error));
   };

@@ -6,20 +6,26 @@ import pageStyle from "../../styles/pages.module.scss";
 import searchCSS from "../../styles/search.module.scss";
 
 interface ArticlesInterface {
-  id: string;
   title: string;
-  authors: string;
+  authors: string[];
   journalName: string;
-  pubYear: number;
+  pubYear: string;
   volume: string;
   pages: string;
   doi: string;
-  claims: string;
   method: string;
+  claims: string;
+  isForClaim: string;
+  strengthOfClaim: string;
+  evidence: string;
+  isApprovedByModerator: boolean;
+  isRejectedByModerator: boolean;
+  isApprovedByAnalyst: boolean;
+  isRejectedByAnalyst: boolean;
 }
-type ArticlesProps = {
-  articles: ArticlesInterface[];
-};
+// type ArticlesProps = {
+//   articles: ArticlesInterface[];
+// };
 
 const SearchPage: React.FC = () => {
   const headers: { key: keyof ArticlesInterface; label: string }[] = [
@@ -30,9 +36,21 @@ const SearchPage: React.FC = () => {
     { key: "volume", label: "Volume" },
     { key: "pages", label: "Pages" },
     { key: "doi", label: "DOI" },
-    { key: "claims", label: "Claims" },
     { key: "method", label: "Method" },
+    { key: "claims", label: "Claim" },
+    { key: "isForClaim", label: "For/Against Claim" },
+    { key: "strengthOfClaim", label: "Strength Of Claim" },
+    { key: "evidence", label: "evidence" },
+    { key: "isApprovedByModerator", label: "" },
+    { key: "isRejectedByModerator", label: "" },
+    { key: "isApprovedByAnalyst", label: "" },
+    { key: "isRejectedByAnalyst", label: "" },
   ];
+  const filteredHeaders = headers.filter(
+    (header) =>
+      !header.key.startsWith("isApproved") &&
+      !header.key.startsWith("isRejected")
+  );
   const [searchResults, setSearchResults] = useState<ArticlesInterface[]>([]);
   const [articles, setArticles] = useState<ArticlesInterface[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -49,18 +67,15 @@ const SearchPage: React.FC = () => {
         const data = response.data;
         console.log(data);
         const fetchedArticles: ArticlesInterface[] = data.map(
-          (article: any) => ({
-            id: article.id ?? article._id,
-            title: article.title,
-            authors: article.authors,
-            journalName: article.journalName,
-            pubYear: article.pubYear,
-            volume: article.volume,
-            pages: article.pages,
-            doi: article.doi,
-            claims: article.claims,
-            method: article.method,
-          })
+          (article: any) => {
+            const transformedArticle: any = {};
+
+            headers.forEach((mapping) => {
+              transformedArticle[mapping.key] = article[mapping.key];
+            });
+
+            return transformedArticle;
+          }
         );
         setArticles(fetchedArticles);
         setIsLoading(false); // Data has been fetched
@@ -88,7 +103,14 @@ const SearchPage: React.FC = () => {
           parseInt(article.pubYear.toString()) >= parseInt(startYear)) &&
         (endYear === "" ||
           parseInt(article.pubYear.toString()) <= parseInt(endYear));
-      return matchesTitle && matchesMethod && withinYearRange;
+      const approvedArticle =
+        article.isApprovedByModerator &&
+        !article.isRejectedByModerator &&
+        article.isApprovedByAnalyst &&
+        !article.isRejectedByAnalyst;
+      return (
+        matchesTitle && matchesMethod && withinYearRange && approvedArticle
+      );
     });
     setSearchResults(filteredArticles);
   };
@@ -148,7 +170,7 @@ const SearchPage: React.FC = () => {
       {isLoading ? (
         <div>Loading...</div>
       ) : (
-        <SortableTable headers={headers} data={searchResults} />
+        <SortableTable headers={filteredHeaders} data={searchResults} />
       )}
     </div>
   );

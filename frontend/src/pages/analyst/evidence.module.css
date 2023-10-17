@@ -1,0 +1,86 @@
+.left {
+    grid-row: auto;
+}
+
+/* Styling for the analystEvidence container */
+.analystEvidence {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    /* Changed to column for better alignment */
+    align-items: center;
+    justify-content: center;
+}
+
+/* Styling for labels */
+.analystEvidence label {
+    margin-bottom: 8px;
+    /* Add some spacing between labels and inputs */
+}
+
+/* Styling for input elements */
+.analystEvidence input {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px;
+    width: 100%;
+    margin-bottom: 12px;
+    /* Add spacing between input elements */
+}
+
+/* Styling for select elements */
+.analystEvidence select {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px;
+    width: 100%;
+    margin-bottom: 12px;
+    /* Add spacing between select elements */
+}
+
+/* Styling for buttons */
+.analystEvidence button {
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px;
+    background-color: rgb(110, 154, 192);
+    color: white;
+    transition: background-color 0.3s;
+    font-size: large;
+    cursor: pointer;
+    margin-right: 10px;
+    /* Add spacing between buttons */
+}
+
+.analystEvidence button:last-child {
+    margin-right: 0;
+    /* Remove right margin from the last button */
+}
+
+.analystEvidence button:hover {
+    background-color: lightblue;
+}
+
+
+
+.label {
+    padding: 10px;
+}
+
+
+.analystForm {
+    /* border: 2px solid Blue; */
+    width: 60vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+
+.menu {
+    justify-self: center;
+}
+
+.evidenceInput {
+    height: 15vh;
+}
