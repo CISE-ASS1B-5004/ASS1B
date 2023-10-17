@@ -54,7 +54,19 @@ const Articles: React.FC = () => {
     router.push("/moderator/archive"); // Navigate to the archive page
   };
 
-  const handleApprove = (id: string) => {
+  const handleReviewUpdate = (updatedReview: string) => {
+    setArticles((prevArticles) => {
+      return prevArticles.map((article) => {
+        if (article._id === selectedArticle?._id) {
+          return { ...article, review: updatedReview };
+        }
+        return article;
+      });
+    });
+  };
+
+  const handleApprove = (id: string, event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
     axios
       .put(
         `${process.env.NEXT_PUBLIC_API_URL}/api/moderator/approve/${id}`,
@@ -70,7 +82,8 @@ const Articles: React.FC = () => {
       .catch((error) => console.error("Error approving article:", error));
   };
 
-  const handleReject = (id: string) => {
+  const handleReject = (id: string, event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
     axios
       .put(
         `${process.env.NEXT_PUBLIC_API_URL}/api/moderator/reject/${id}`,
@@ -109,7 +122,7 @@ const Articles: React.FC = () => {
           >
             Go to Archive
           </button>
-          <Modal article={selectedArticle} onClose={handleCloseModal} />
+          <Modal article={selectedArticle} onClose={handleCloseModal} onReviewUpdate={handleReviewUpdate}/>
           <p>Page containing a table of articles with moderation queue:</p>
           {isLoading ? (
             <div>Loading...</div>
@@ -127,6 +140,8 @@ const Articles: React.FC = () => {
                 <span>DOI</span>
                 <span>Claims</span>
                 <span>Method</span>
+                <span>Peer Review</span>
+                <span>Actions</span>
               </div>
 
               {articles.map((article) => (
@@ -140,6 +155,15 @@ const Articles: React.FC = () => {
                   <span>{article.doi}</span>
                   <span>{article.claims}</span>
                   <span>{article.method}</span>
+                  <span>{article.review}</span>
+                  <span>
+                    <button onClick={(e) => handleApprove(article._id, e)}>
+                      Approve
+                    </button>
+                    <button onClick={(e) => handleReject(article._id, e)}>
+                      Reject
+                    </button>
+                  </span>
                 </div>
               ))}
             </div>

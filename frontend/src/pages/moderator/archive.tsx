@@ -6,7 +6,7 @@ import { useUserRole } from "../../components/UserContext";
 
 interface ArticlesInterface {
   title: string;
-  authors: string;
+  authors: string[];
   journalName: string;
   pubYear: string;
   volume: string;
@@ -14,7 +14,9 @@ interface ArticlesInterface {
   doi: string;
   claims: string;
   method: string;
+  review: string;
 }
+
 type ArticlesProps = {
   articles: ArticlesInterface[];
 };
@@ -30,6 +32,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
     { key: "doi", label: "DOI" },
     { key: "claims", label: "Claims" },
     { key: "method", label: "Method" },
+    { key: "review", label: "Peer Review" },
   ];
 
   const [articles, setArticles] = useState(initialArticles || []);
@@ -57,6 +60,7 @@ const Articles: NextPage<ArticlesProps> = ({ articles: initialArticles }) => {
             doi: article.doi,
             claims: article.claims,
             method: article.method,
+            review: article.review,
           })
         );
         setArticles(fetchedArticles);

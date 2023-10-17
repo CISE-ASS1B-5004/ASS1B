@@ -8,9 +8,10 @@ import axios from "axios";
 interface ModalProps {
     article: ArticlesInterface | null;
     onClose: () => void;
+    onReviewUpdate: (updatedReview: string) => void;
 }
 
-const Modal: React.FC<ModalProps> = ({ article, onClose }) => {
+const Modal: React.FC<ModalProps> = ({ article, onClose, onReviewUpdate }) => {
     const [userRole, setUserRole] = useUserRole();
     const [peerReview, setPeerReview] = useState("");
     
@@ -27,6 +28,7 @@ const Modal: React.FC<ModalProps> = ({ article, onClose }) => {
             console.log(response.data.msg);
             console.log(peerReview);
             onClose();
+            onReviewUpdate(peerReview);
         })
         .catch((error) => {
           console.error("Error submitting peer review:", error);
