@@ -1,0 +1,22 @@
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tableHeader,
+.tableRow {
+    display: flex;
+    justify-content: space-between;
+}
+
+.tableHeader span,
+.tableRow span {
+    flex: 1;
+    padding: 8px;
+    border-bottom: 1px solid #ccc;
+    text-align: center;
+}
+
+.tableRow:hover {
+    background-color: #f5f5f5;
+}

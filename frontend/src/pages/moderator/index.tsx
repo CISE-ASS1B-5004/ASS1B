@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useUserRole } from "../../components/UserContext";
 import { useRouter } from "next/router";
+import Modal from "../../components/ModeratorModal";
+import css from "../../styles/moderator.module.scss";
 
 interface ArticlesInterface {
   _id: string;
@@ -16,12 +18,14 @@ interface ArticlesInterface {
   doi: string;
   claims: string;
   method: string;
+  review: string;
 }
 
 const Articles: React.FC = () => {
   const [articles, setArticles] = useState<ArticlesInterface[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useUserRole(); // Get the user role using the hook
+  const [selectedArticle, setSelectedArticle] = useState<ArticlesInterface | null>(null);
 
   useEffect(() => {
     axios
@@ -50,7 +54,19 @@ const Articles: React.FC = () => {
     router.push("/moderator/archive"); // Navigate to the archive page
   };
 
-  const handleApprove = (id: string) => {
+  const handleReviewUpdate = (updatedReview: string) => {
+    setArticles((prevArticles) => {
+      return prevArticles.map((article) => {
+        if (article._id === selectedArticle?._id) {
+          return { ...article, review: updatedReview };
+        }
+        return article;
+      });
+    });
+  };
+
+  const handleApprove = (id: string, event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
     axios
       .put(
         `${process.env.NEXT_PUBLIC_API_URL}/api/moderator/approve/${id}`,
@@ -66,7 +82,8 @@ const Articles: React.FC = () => {
       .catch((error) => console.error("Error approving article:", error));
   };
 
-  const handleReject = (id: string) => {
+  const handleReject = (id: string, event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
     axios
       .put(
         `${process.env.NEXT_PUBLIC_API_URL}/api/moderator/reject/${id}`,
@@ -81,6 +98,14 @@ const Articles: React.FC = () => {
       .catch((error) => console.error("Error rejecting article:", error));
   };
 
+  const handleArticleClick = (article: ArticlesInterface) => {
+    setSelectedArticle(article);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedArticle(null);
+  };
+  
   return (
     <div className="container">
       {userRole !== "Moderator" ? (
@@ -97,51 +122,51 @@ const Articles: React.FC = () => {
           >
             Go to Archive
           </button>
+          <Modal article={selectedArticle} onClose={handleCloseModal} onReviewUpdate={handleReviewUpdate}/>
           <p>Page containing a table of articles with moderation queue:</p>
           {isLoading ? (
             <div>Loading...</div>
           ) : articles.length === 0 ? (
             <div>No Articles found in the moderation queue</div>
           ) : (
-            <table>
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Authors</th>
-                  <th>Journal Name</th>
-                  <th>Published Year</th>
-                  <th>Volume</th>
-                  <th>Pages</th>
-                  <th>DOI</th>
-                  <th>Claims</th>
-                  <th>Method</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {articles.map((article) => (
-                  <tr key={article._id}>
-                    <td>{article.title}</td>
-                    <td>{article.authors.join(", ")}</td>
-                    <td>{article.journalName}</td>
-                    <td>{article.pubYear}</td>
-                    <td>{article.volume}</td>
-                    <td>{article.pages}</td>
-                    <td>{article.doi}</td>
-                    <td>{article.claims}</td>
-                    <td>{article.method}</td>
-                    <td>
-                      <button onClick={() => handleApprove(article._id)}>
-                        Approve
-                      </button>
-                      <button onClick={() => handleReject(article._id)}>
-                        Reject
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className={css.table}>
+              <div className={css.tableHeader}>
+                <span>Title</span>
+                <span>Authors</span>
+                <span>Journal Name</span>
+                <span>Published Year</span>
+                <span>Volume</span>
+                <span>Pages</span>
+                <span>DOI</span>
+                <span>Claims</span>
+                <span>Method</span>
+                <span>Peer Review</span>
+                <span>Actions</span>
+              </div>
+
+              {articles.map((article) => (
+                <div key={article._id} className={css.tableRow} onClick={() => handleArticleClick(article)}>
+                  <span>{article.title}</span>
+                  <span>{article.authors.join(", ")}</span>
+                  <span>{article.journalName}</span>
+                  <span>{article.pubYear}</span>
+                  <span>{article.volume}</span>
+                  <span>{article.pages}</span>
+                  <span>{article.doi}</span>
+                  <span>{article.claims}</span>
+                  <span>{article.method}</span>
+                  <span>{article.review}</span>
+                  <span>
+                    <button onClick={(e) => handleApprove(article._id, e)}>
+                      Approve
+                    </button>
+                    <button onClick={(e) => handleReject(article._id, e)}>
+                      Reject
+                    </button>
+                  </span>
+                </div>
+              ))}
+            </div>
           )}
         </>
       )}

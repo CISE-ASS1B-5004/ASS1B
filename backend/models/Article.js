@@ -65,6 +65,10 @@ const ArticleSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  review: {
+    type: String,
+    default: null, 
+  },
 });
 
 module.exports = Article = mongoose.model("article", ArticleSchema);
