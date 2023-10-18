@@ -45,7 +45,7 @@ const Administrator: React.FC = () => {
     
 
     const handleEdit = (id: string) => {
-        router.push(`/administrator/${id}`);
+        router.push(`/admin/${id}`);
     };
 
     return (
